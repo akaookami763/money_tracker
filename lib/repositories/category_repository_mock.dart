@@ -6,10 +6,10 @@ import 'category_repository_abstract.dart';
 class FinancialCategoryRepositoryMock extends FinancialCategoryRepository {
 
   final List<FinancialCategory> _mockDatabase = [
-      FinancialCategory('Category1'),
-      FinancialCategory('Category2'),
-      FinancialCategory('Category3'),
-      FinancialCategory('Category4')
+      FinancialCategory('Health'),
+      FinancialCategory('Groceries'),
+      FinancialCategory('Water'),
+      FinancialCategory('Mortgage Interest')
     ];
 
   @override

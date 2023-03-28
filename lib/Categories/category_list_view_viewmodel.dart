@@ -6,6 +6,11 @@ class CategoryListViewViewModel {
   List<FinancialCategory> _categories = [];
   List<FinancialCategory> _suggestions = [];
 
+
+  set categories(List<FinancialCategory> categories) {
+    _categories = categories;
+  }
+
   List<String> get suggestions {
     return _suggestions.map((suggestion) {
       return suggestion.name;
@@ -26,7 +31,7 @@ class CategoryListViewViewModel {
 
   void updateSuggestions(String userEntry) {
     _suggestions = _categories
-        .where((category) => category.name.contains(userEntry))
+        .where((category) => category.name.toLowerCase().contains(userEntry.toLowerCase()))
         .toList();
   }
 }
