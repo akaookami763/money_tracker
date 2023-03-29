@@ -17,6 +17,14 @@ class FinancialCategoryRepositoryMock extends FinancialCategoryRepository {
   }
 
   @override
+  Future<int> addCategory(FinancialCategory category) {
+    return Future(() {
+      _mockDatabase.add(category);
+      return 1;
+    });
+  }
+
+  @override
   Future<List<FinancialCategory>> getAllCategories() {
     return  Future(() => _mockDatabase);
   }

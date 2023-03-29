@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:money_tracker/DataCentral/financial_category_model.dart';
 
 import '../repositories/category_repository_abstract.dart';
@@ -11,6 +12,17 @@ class CategoryWorker extends CategoryService {
     final database = await DatabaseHelper.instance.database;
     Map<String, String> row = {
       'name': name,
+      'tag' : UniqueKey().toString(),
+    };
+    return (database.insert('categories', row));
+  }
+
+  @override
+  Future<int> addCategory(FinancialCategory category) async {
+    final database = await DatabaseHelper.instance.database;
+    Map<String, String> row = {
+      'name': category.name,
+      'tag' : category.tag.toString(),
     };
     return (database.insert('categories', row));
   }
@@ -40,6 +52,11 @@ class CategoryServiceMock extends CategoryService {
   @override
   Future<int> createCategory(String name) {
     return repo.createCategory(name);
+  }
+
+  @override
+  Future<int> addCategory(FinancialCategory category) {
+    return repo.addCategory(category);
   }
 
   @override

@@ -45,8 +45,8 @@ class _CategoryListViewState extends State<CategoryListView> {
       ),
       TextField(controller: _transactionController,),
       ElevatedButton(
-          onPressed: () {
-            _viewModel.addTransaction(_searchController.text, _transactionController.text);
+          onPressed: () async {
+            await _viewModel.addTransaction(_searchController.text, _transactionController.text);
             setState(() {
               _searchController.text = "";
               _transactionController.text = "";

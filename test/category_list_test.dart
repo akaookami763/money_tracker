@@ -8,18 +8,25 @@ void main() {
   CategoryListViewViewModelImpl _sut;
 
   test("update Suggested Categories", () async {
-    _sut = await CategoryListViewViewModelImpl.create(
-        c: CategoryServiceMock(), t: TransactionServiceMock());
+    _sut = CategoryListViewViewModelImpl(CategoryServiceMock(), TransactionServiceMock());
 
-    Map<FinancialCategory, double> result = _sut.updateSuggestions("gr");
+    _sut.updateSuggestions("gr");
 
-    expect(result.entries.length, 1);
+    expect(_sut.allSuggestions.length, 1);
   });
   test("Run initial load", () async {
-    _sut = await CategoryListViewViewModelImpl.create(
-        c: CategoryServiceMock(), t: TransactionServiceMock());
+    _sut = CategoryListViewViewModelImpl(CategoryServiceMock(), TransactionServiceMock());
+
 
     expect(_sut.allCategories.length, 6);
     expect(_sut.allSuggestions.length, 6);
+  });
+
+  test("Integration of making a new transaction for the same category twice", () async {
+    _sut = CategoryListViewViewModelImpl(CategoryServiceMock(), TransactionServiceMock());
+    await _sut.initialAction();
+    await _sut.addTransaction("new", "3.45");
+    await _sut.addTransaction("new", "10.34");
+
   });
 }

@@ -9,7 +9,7 @@ abstract class CategoryListViewViewModel {
 
   Future initialAction();
   void updateSuggestions(String userInput);
-  void addTransaction(String userInput, String amount);
+  Future addTransaction(String userInput, String amount);
 }
 
 class CategoryListViewViewModelImpl extends CategoryListViewViewModel {
@@ -45,18 +45,20 @@ class CategoryListViewViewModelImpl extends CategoryListViewViewModel {
   }
 
   @override
-  void addTransaction(String userInput, String amount) async {
+  Future addTransaction(String userInput, String amount) async {
     FinancialCategory selectedCategory;
 
     double doubleCost = double.parse(amount);
     if (doubleCost <= 0) {
       return;
     }
-
+bool newCategory = false;
     List<FinancialCategory> categories =
         _categories.where((element) => element.name == userInput).toList();
     if (categories.length != 1) {
       selectedCategory = FinancialCategory(userInput);
+      newCategory = true;
+      _cWorker.addCategory(selectedCategory);
     } else {
       selectedCategory = categories[0];
     }
@@ -70,6 +72,7 @@ class CategoryListViewViewModelImpl extends CategoryListViewViewModel {
 
     await _tWorker.addTransaction(newTransaction);
     _categories = await _cWorker.getAllCategories();
+    _updateSuggestionsWithTransaction(newTransaction, newCategory);
   }
 
   @override
@@ -77,6 +80,22 @@ class CategoryListViewViewModelImpl extends CategoryListViewViewModel {
     _updatedSuggestions = Map<FinancialCategory, double>.from(_suggestions);
     _updatedSuggestions.removeWhere((key, value) {
       return !key.name.toLowerCase().contains(userInput.toLowerCase());
+    });
+  }
+
+  void _updateSuggestionsWithTransaction(Transaction transaction, bool isNewCategory) {
+    if(isNewCategory) {
+      _suggestions.addAll(<FinancialCategory, double>{transaction.getCategory(): transaction.getCost()});
+      _updatedSuggestions.addAll(<FinancialCategory, double>{transaction.getCategory(): transaction.getCost()});
+      return;
+    }
+    _suggestions.update(transaction
+    .getCategory(), (value) {
+      return value + transaction.getCost();
+    });
+    _updatedSuggestions.update(transaction
+    .getCategory(), (value) {
+      return value + transaction.getCost();
     });
   }
 }
