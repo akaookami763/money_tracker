@@ -5,6 +5,7 @@ import '../DataCentral/transaction_model.dart';
 
 abstract class TransactionService {
   Future<List<Transaction>> getAllTransactions();
+  Future<List<Transaction>> getAllTransactionsFor(FinancialCategory category);
   Future<List<Transaction>> addTransaction(Transaction transaction);
   Future<List<Transaction>> updateTransaction(Transaction transaction);
 }

@@ -1,16 +1,12 @@
 
 import 'package:money_tracker/DataCentral/financial_category_model.dart';
 
+import '../mocks/category_list_mock.dart';
 import 'category_repository_abstract.dart';
 
 class FinancialCategoryRepositoryMock extends FinancialCategoryRepository {
 
-  final List<FinancialCategory> _mockDatabase = [
-      FinancialCategory('Health'),
-      FinancialCategory('Groceries'),
-      FinancialCategory('Water'),
-      FinancialCategory('Mortgage Interest')
-    ];
+  final List<FinancialCategory> _mockDatabase = categoryListMock;
 
   @override
   Future<int> createCategory(String name) {

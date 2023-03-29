@@ -1,26 +1,25 @@
-import 'dart:math';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:money_tracker/Categories/category_list_view_viewmodel.dart';
 import 'package:money_tracker/DataCentral/financial_category_model.dart';
+import 'package:money_tracker/services/category_service.dart';
+import 'package:money_tracker/services/transaction_service.dart';
 
 void main() {
-  CategoryListViewViewModel _sut;
+  CategoryListViewViewModelImpl _sut;
 
-  List<FinancialCategory> _mockDatabase = [
-      FinancialCategory('Health'),
-      FinancialCategory('Groceries'),
-      FinancialCategory('Water'),
-      FinancialCategory('Mortgage Interest')
-    ];
+  test("update Suggested Categories", () async {
+    _sut = await CategoryListViewViewModelImpl.create(
+        c: CategoryServiceMock(), t: TransactionServiceMock());
 
-  test("update Suggested Categories", () {
-    _sut = CategoryListViewViewModel();
-    _sut.categories = _mockDatabase;
+    Map<FinancialCategory, double> result = _sut.updateSuggestions("gr");
 
-    _sut.updateSuggestions("gr");
+    expect(result.entries.length, 1);
+  });
+  test("Run initial load", () async {
+    _sut = await CategoryListViewViewModelImpl.create(
+        c: CategoryServiceMock(), t: TransactionServiceMock());
 
-    expect(_sut.suggestions
-    , ['Groceries']);
+    expect(_sut.allCategories.length, 6);
+    expect(_sut.allSuggestions.length, 6);
   });
 }

@@ -20,7 +20,7 @@ CategoryViewViewModel(this._category);
   FinancialCategory get category => _category;
 
   Future<void> initialActions() async {
-    _transactions = await tWorker.getAllTransactions();
+    _transactions = await tWorker.getAllTransactionsFor(category);
   }
 
   void costIncrease(String cost, DateTime date,

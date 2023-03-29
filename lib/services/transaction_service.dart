@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:money_tracker/DataCentral/financial_category_model.dart';
 import 'package:money_tracker/DataCentral/transaction_model.dart';
 import 'package:money_tracker/services/transaction_service_abstract.dart';
@@ -13,8 +12,7 @@ class TransactionWorker extends TransactionService {
   Future<List<Transaction>> addTransaction(Transaction transaction) async {
     Database database = await DatabaseHelper.instance.database;
     Map<String, dynamic> row = {
-            'tag': transaction.getTag(),
-
+      'tag': transaction.getTag(),
       'category': transaction.getCategory(),
       'cost': transaction.getCost(),
       'date': transaction.getDate(),
@@ -36,8 +34,13 @@ class TransactionWorker extends TransactionService {
   }
 
   @override
-  Future<List<Transaction>> updateTransaction(
-      Transaction transaction) async {
+  Future<List<Transaction>> getAllTransactionsFor(FinancialCategory category) {
+    // TODO: implement getAllTransactionsFor
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Transaction>> updateTransaction(Transaction transaction) async {
     Database database = await DatabaseHelper.instance.database;
     Map<String, dynamic> row = {
       'tag': transaction.getTag(),
@@ -52,8 +55,7 @@ class TransactionWorker extends TransactionService {
 }
 
 class TransactionServiceMock extends TransactionService {
-
-      TransactionRepository repo = TransactionRepositoryMock();
+  TransactionRepository repo = TransactionRepositoryMock();
 
   @override
   Transaction createTransaction(FinancialCategory category, Double cost,
@@ -68,18 +70,21 @@ class TransactionServiceMock extends TransactionService {
   }
 
   @override
-  Future<List<Transaction>> addTransaction(
-      Transaction transaction) async {
-      int result = await repo.createTransaction(transaction);
-    if(result == 1) {
+  Future<List<Transaction>> getAllTransactionsFor(FinancialCategory category) {
+    return repo.getAllTransactionsFor(category);
+  }
+
+  @override
+  Future<List<Transaction>> addTransaction(Transaction transaction) async {
+    int result = await repo.createTransaction(transaction);
+    if (result == 1) {
       return repo.getAllTransactions();
     }
     return Future(() => []);
   }
 
   @override
-  Future<List<Transaction>> updateTransaction(
-       Transaction transaction) {
+  Future<List<Transaction>> updateTransaction(Transaction transaction) {
     // TODO: implement updateTransaction
     throw UnimplementedError();
   }
