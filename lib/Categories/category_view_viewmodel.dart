@@ -13,8 +13,8 @@ class CategoryViewViewModel extends ChangeNotifier {
 
 CategoryViewViewModel(this._category);
   //TODO: Change to real data once everything is implemented
-  CategoryService worker = CategoryServiceMock();
-  TransactionService tWorker = TransactionServiceMock();
+  CategoryService worker = CategoryWorker(); // CategoryServiceMock();
+  TransactionService tWorker = TransactionWorker(); //TransactionServiceMock();
 
   List<Transaction> get transactions => _transactions;
   FinancialCategory get category => _category;
@@ -30,10 +30,8 @@ CategoryViewViewModel(this._category);
       return;
     }
 
-    final transaction = Transaction(category: _category, date: date, cost: doubleCost, extraNotes: extraNotes);
-
     _transactions = await tWorker.addTransaction(
-        transaction);
+        _category.tag, date, doubleCost, extraNotes);
 
     updateSum();
     monthlySum();
@@ -47,10 +45,9 @@ CategoryViewViewModel(this._category);
     if (doubleCost <= 0) {
       return;
     }
-    final transaction = Transaction(category: _category, date: date, cost: doubleCost * -1, extraNotes: extraNotes);
 
     _transactions = await tWorker.addTransaction(
-        transaction);
+        _category.tag, date, doubleCost * -1, extraNotes);
 
     updateSum();
     monthlySum();

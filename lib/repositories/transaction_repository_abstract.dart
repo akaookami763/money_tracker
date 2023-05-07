@@ -5,6 +5,7 @@ import '../DataCentral/financial_category_model.dart';
 abstract class TransactionRepository {
   Future<List<Transaction>> getAllTransactions();
   Future<List<Transaction>> getAllTransactionsFor(FinancialCategory category);
-  Future<int> createTransaction(Transaction transaction);
+  Future<Transaction> getTransactionByTag(int tag);
+  Future<int> createTransaction(int category, DateTime date, double cost, String extraNotes);
   Future<int> removeTransaction(Transaction transaction);
 }

@@ -10,11 +10,21 @@ class CategoryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(child: Column(
-      children: [
+    return GestureDetector(child: Container(
+      margin: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        border: Border.all(
+          width: 5,
+          color: Colors.purple
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(children: [
         Text(category.name),
         Text(cost.toStringAsFixed(2))
       ],
+      mainAxisAlignment: MainAxisAlignment.center,
+    )
     ),
     onTap: () {
       onTap(category);

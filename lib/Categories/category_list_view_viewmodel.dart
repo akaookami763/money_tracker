@@ -2,39 +2,42 @@ import 'package:money_tracker/DataCentral/financial_category_model.dart';
 import 'package:money_tracker/DataCentral/transaction_model.dart';
 import 'package:money_tracker/services/category_service_abstract.dart';
 import 'package:money_tracker/services/transaction_service_abstract.dart';
-
-abstract class CategoryListViewViewModel {
-  final List<FinancialCategory> allCategories = [];
-  final Map<FinancialCategory, double> allSuggestions = {};
-
-  Future initialAction();
-  void updateSuggestions(String userInput);
-  Future addTransaction(String userInput, String amount);
-}
+import 'category_list_view_viewmodel_abstract.dart';
 
 class CategoryListViewViewModelImpl extends CategoryListViewViewModel {
   List<FinancialCategory> _categories = [];
+  List<Transaction> _transactions = [];
 
+  @override
   List<FinancialCategory> get allCategories => _categories;
+  @override
+  List<Transaction> get recentTransactions =>
+      _transactions.where((transaction) {
+        return transaction.getDate().isAfter(
+              DateTime.now().subtract(
+                Duration(days: 7),
+              ),
+            );
+      }).toList();
 
   final Map<FinancialCategory, double> _suggestions = {};
   Map<FinancialCategory, double> _updatedSuggestions = {};
 
   Map<FinancialCategory, double> get allSuggestions => _updatedSuggestions;
 
-  late CategoryService _cWorker;
+  final CategoryService _cWorker;
 
-  late TransactionService _tWorker;
+  final TransactionService _tWorker;
 
   CategoryListViewViewModelImpl(this._cWorker, this._tWorker);
 
   @override
   Future initialAction() async {
     _categories = await _cWorker.getAllCategories();
-    List<Transaction> transactions = await _tWorker.getAllTransactions();
+    _transactions = await _tWorker.getAllTransactions();
     for (FinancialCategory category in _categories) {
-      List<Transaction> filteredTransactions = transactions.where((element) {
-        return element.getCategory() == category;
+      List<Transaction> filteredTransactions = _transactions.where((element) {
+        return element.getCategory().tag == category.tag;
       }).toList();
       double cost = filteredTransactions
           .map((e) => e.getCost())
@@ -52,27 +55,29 @@ class CategoryListViewViewModelImpl extends CategoryListViewViewModel {
     if (doubleCost <= 0) {
       return;
     }
-bool newCategory = false;
+    bool newCategory = false;
     List<FinancialCategory> categories =
         _categories.where((element) => element.name == userInput).toList();
     if (categories.length != 1) {
-      selectedCategory = FinancialCategory(userInput);
       newCategory = true;
-      _cWorker.addCategory(selectedCategory);
+      int tag = await _cWorker.createCategory(userInput);
+      if (tag != -1) {
+        selectedCategory = FinancialCategory(tag, userInput);
+      } else {
+        print("Failed to make category");
+        return;
+      }
     } else {
       selectedCategory = categories[0];
     }
 
     //TODO: Add extraNotes to the UI
-    Transaction newTransaction = Transaction(
-        category: selectedCategory,
-        date: DateTime.now(),
-        cost: doubleCost,
-        extraNotes: "");
-
-    await _tWorker.addTransaction(newTransaction);
+    await _tWorker.addTransaction(
+        selectedCategory.tag, DateTime.now(), doubleCost, "");
     _categories = await _cWorker.getAllCategories();
-    _updateSuggestionsWithTransaction(newTransaction, newCategory);
+
+    _updateSuggestionsWithTransaction(
+        selectedCategory, doubleCost, newCategory);
   }
 
   @override
@@ -83,19 +88,18 @@ bool newCategory = false;
     });
   }
 
-  void _updateSuggestionsWithTransaction(Transaction transaction, bool isNewCategory) {
-    if(isNewCategory) {
-      _suggestions.addAll(<FinancialCategory, double>{transaction.getCategory(): transaction.getCost()});
-      _updatedSuggestions.addAll(<FinancialCategory, double>{transaction.getCategory(): transaction.getCost()});
+  void _updateSuggestionsWithTransaction(
+      FinancialCategory category, double cost, bool isNewCategory) {
+    if (isNewCategory) {
+      _suggestions.addAll(<FinancialCategory, double>{category: cost});
+      _updatedSuggestions.addAll(<FinancialCategory, double>{category: cost});
       return;
     }
-    _suggestions.update(transaction
-    .getCategory(), (value) {
-      return value + transaction.getCost();
+    _suggestions.update(category, (value) {
+      return value + cost;
     });
-    _updatedSuggestions.update(transaction
-    .getCategory(), (value) {
-      return value + transaction.getCost();
+    _updatedSuggestions.update(category, (value) {
+      return value + cost;
     });
   }
 }

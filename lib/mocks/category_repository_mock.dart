@@ -1,8 +1,9 @@
 
+import 'package:flutter/material.dart';
 import 'package:money_tracker/DataCentral/financial_category_model.dart';
 
-import '../mocks/category_list_mock.dart';
-import 'category_repository_abstract.dart';
+import 'category_list_mock.dart';
+import '../repositories/category_repository_abstract.dart';
 
 class FinancialCategoryRepositoryMock extends FinancialCategoryRepository {
 
@@ -11,7 +12,7 @@ class FinancialCategoryRepositoryMock extends FinancialCategoryRepository {
   @override
   Future<int> createCategory(String name) {
     return Future(() {
-      _mockDatabase.add(FinancialCategory(name));
+      _mockDatabase.add(FinancialCategory(UniqueKey().hashCode, name));
       return 1;
     });
   }
@@ -22,6 +23,18 @@ class FinancialCategoryRepositoryMock extends FinancialCategoryRepository {
       _mockDatabase.add(category);
       return 1;
     });
+  }
+
+  @override
+  Future<FinancialCategory> getCategoryByName(String name) {
+    // TODO: implement getCategoryByName
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<FinancialCategory> getCategoryByTag(int tag) {
+    // TODO: implement getCategoryByTag
+    throw UnimplementedError();
   }
 
   @override

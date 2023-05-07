@@ -4,33 +4,34 @@ import 'financial_category_model.dart';
 
 /// A transaction object contains information of a user entered transaction they have performed.  It is editable with setters
 class Transaction {
-  late final UniqueKey _tag;
+  late final int _tag;
   late FinancialCategory _category;
   late DateTime _date;
   late double _cost;
   late String _extraNotes;
 
   Transaction(
-      {required FinancialCategory category,
+      {required int tag,
+      required FinancialCategory category,
       required DateTime date,
       required double cost,
       required String extraNotes}) {
+    this._tag = tag;
     this._category = category;
     this._date = date;
     this._cost = cost;
     this._extraNotes = extraNotes;
 
-    this._tag = UniqueKey();
-  }
 
+  }
   Transaction.fromMap(Map<String, dynamic> res)
       : _tag = res['tag'],
         _cost = res['cost'],
-        _category = res['category'],
+        _category = FinancialCategory(res['category'], res['name']),
         _extraNotes = res['extraNotes'],
-        _date = res['date'];
+        _date = DateTime.fromMillisecondsSinceEpoch(res['date']);
 
-  UniqueKey getTag() {
+  int getTag() {
     return this._tag;
   }
 

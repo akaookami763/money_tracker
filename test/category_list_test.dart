@@ -1,8 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:money_tracker/Categories/category_list_view_viewmodel.dart';
-import 'package:money_tracker/DataCentral/financial_category_model.dart';
-import 'package:money_tracker/services/category_service.dart';
-import 'package:money_tracker/services/transaction_service.dart';
+import 'package:money_tracker/services/mock/category_service_mock.dart';
+import 'package:money_tracker/services/mock/transaction_service_mock.dart';
 
 void main() {
   CategoryListViewViewModelImpl _sut;
