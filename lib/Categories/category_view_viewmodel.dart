@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:money_tracker/DataCentral/financial_category_model.dart';
+import 'package:money_tracker/Utils/DateUtils/date_picker_params.dart';
 import 'package:money_tracker/services/category_service_abstract.dart';
 import 'package:money_tracker/services/transaction_service.dart';
 
@@ -12,9 +13,8 @@ class CategoryViewViewModel extends ChangeNotifier {
   final FinancialCategory _category;
 
 CategoryViewViewModel(this._category);
-  //TODO: Change to real data once everything is implemented
-  CategoryService worker = CategoryWorker(); // CategoryServiceMock();
-  TransactionService tWorker = TransactionWorker(); //TransactionServiceMock();
+  CategoryService worker = CategoryWorker();
+  TransactionService tWorker = TransactionWorker();
 
   List<Transaction> get transactions => _transactions;
   FinancialCategory get category => _category;

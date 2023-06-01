@@ -12,7 +12,7 @@ class TransactionWorker extends TransactionService {
 
   @override
   Future<List<Transaction>> addTransaction(int category, DateTime date, double cost, String extraNotes) async {
-    repository.createTransaction(category, date, cost, extraNotes);
+    final int = repository.createTransaction(category, date, cost, extraNotes);
 
     return getAllTransactions();
   }
@@ -40,5 +40,16 @@ class TransactionWorker extends TransactionService {
     };
     database.update('transactions', row);
     return getAllTransactions();
+  }
+
+  @override
+  Future<Transaction> deleteTransaction(Transaction transaction) async {
+    final int success = await repository.removeTransaction(transaction);
+    if(success == 1) {
+      return transaction;
+    }
+    else {
+      throw Error();
+    }
   }
 }

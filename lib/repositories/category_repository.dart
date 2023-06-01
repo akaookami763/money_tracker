@@ -49,9 +49,10 @@ class FinancialCategoryRepositoryImpl extends FinancialCategoryRepository {
   }
 
   @override
-  Future<int> removeCategory(FinancialCategory category) {
-    // TODO: implement removeCategory
-    throw UnimplementedError();
+  Future<int> removeCategory(FinancialCategory category) async {
+    Database database = await DatabaseHelper.instance.database;
+
+    return database.delete('categories', where: 'tag = ?', whereArgs: [category.tag]);
   }
 
 }

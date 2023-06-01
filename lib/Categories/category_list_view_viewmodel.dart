@@ -2,11 +2,13 @@ import 'package:money_tracker/DataCentral/financial_category_model.dart';
 import 'package:money_tracker/DataCentral/transaction_model.dart';
 import 'package:money_tracker/services/category_service_abstract.dart';
 import 'package:money_tracker/services/transaction_service_abstract.dart';
+import '../Utils/DateUtils/date_picker_params.dart';
 import 'category_list_view_viewmodel_abstract.dart';
 
 class CategoryListViewViewModelImpl extends CategoryListViewViewModel {
   List<FinancialCategory> _categories = [];
   List<Transaction> _transactions = [];
+  DateTime currentDate = DateTime.now();
 
   @override
   List<FinancialCategory> get allCategories => _categories;
@@ -39,6 +41,10 @@ class CategoryListViewViewModelImpl extends CategoryListViewViewModel {
       List<Transaction> filteredTransactions = _transactions.where((element) {
         return element.getCategory().tag == category.tag;
       }).toList();
+      if(filteredTransactions.isEmpty) { // TODO: Find general place to put this logic.  Shouldn't depend on viewModel level
+        _cWorker.removeCategory(category);
+        continue;
+      }
       double cost = filteredTransactions
           .map((e) => e.getCost())
           .reduce((value, element) => value + element);
@@ -51,14 +57,14 @@ class CategoryListViewViewModelImpl extends CategoryListViewViewModel {
   Future addTransaction(String userInput, String amount) async {
     FinancialCategory selectedCategory;
 
-    double doubleCost = double.parse(amount);
+    double doubleCost = double.tryParse(amount) ?? -1;
     if (doubleCost <= 0) {
       return;
     }
     bool newCategory = false;
     List<FinancialCategory> categories =
         _categories.where((element) => element.name == userInput).toList();
-    if (categories.length != 1) {
+    if (categories.length != 1) { //If there's more than 1 filtered category, we make a new one
       newCategory = true;
       int tag = await _cWorker.createCategory(userInput);
       if (tag != -1) {
@@ -68,16 +74,25 @@ class CategoryListViewViewModelImpl extends CategoryListViewViewModel {
         return;
       }
     } else {
-      selectedCategory = categories[0];
+      selectedCategory = categories[0]; //There will only be 1 filtered category
     }
 
     //TODO: Add extraNotes to the UI
     await _tWorker.addTransaction(
-        selectedCategory.tag, DateTime.now(), doubleCost, "");
+        selectedCategory.tag, currentDate, doubleCost, "");
     _categories = await _cWorker.getAllCategories();
+
+    //Reset the date after adding a transaction
+    currentDate = DateTime.now();
 
     _updateSuggestionsWithTransaction(
         selectedCategory, doubleCost, newCategory);
+  }
+
+  @override
+  Future removeCategory(String categoryName) {
+    // TODO: implement removeCategory
+    throw UnimplementedError();
   }
 
   @override
@@ -101,5 +116,13 @@ class CategoryListViewViewModelImpl extends CategoryListViewViewModel {
     _updatedSuggestions.update(category, (value) {
       return value + cost;
     });
+  }
+
+  // Date Picker Implementations
+
+  DatePickerParams getPickerDates() {
+    final today = DateTime.now();
+    final firstDate = DateTime(today.year - 1);
+    return DatePickerParams(firstDate, today, currentDate);
   }
 }

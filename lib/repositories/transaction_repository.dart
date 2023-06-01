@@ -6,13 +6,13 @@ import 'package:sqflite/sqflite.dart' hide Transaction;
 
 import '../services/database_helper.dart';
 
-
 class TransactionRepositoryImpl extends TransactionRepository {
   /// Create a transaction in the database
   /// Returns: The unique key hash of the transaction if a success, or -1 if there is a failure
   @override
-  Future<int> createTransaction(int category, DateTime date, double cost, String extraNotes) async {
-        Database database = await DatabaseHelper.instance.database;
+  Future<int> createTransaction(
+      int category, DateTime date, double cost, String extraNotes) async {
+    Database database = await DatabaseHelper.instance.database;
     Map<String, dynamic> row = {
       'category': category,
       'cost': cost,
@@ -22,12 +22,12 @@ class TransactionRepositoryImpl extends TransactionRepository {
     return await database.insert('transactions', row);
   }
 
-
   @override
   Future<List<Transaction>> getAllTransactions() async {
-        Database database = await DatabaseHelper.instance.database;
+    Database database = await DatabaseHelper.instance.database;
     final allRows = await database.rawQuery('''
-     SELECT * FROM transactions
+     SELECT transactions.tag, transactions.category, transactions.cost, transactions.extraNotes, transactions.date, categories.name
+     FROM transactions
      INNER JOIN categories
      ON transactions.category = categories.tag''');
 
@@ -48,16 +48,20 @@ class TransactionRepositoryImpl extends TransactionRepository {
 
     List<String> columns = ['tag', 'category', 'cost', 'date', 'extraNotes'];
     String whereString = 'tag = ?';
-    final Map<String, dynamic> transaction = (await database.query('transactions', columns: columns, where: whereString, whereArgs: [tag])) as Map<String, dynamic>;
+    final Map<String, dynamic> transaction = (await database.query(
+        'transactions',
+        columns: columns,
+        where: whereString,
+        whereArgs: [tag])) as Map<String, dynamic>;
 
     return Transaction.fromMap(transaction);
   }
 
   @override
-  Future<int> removeTransaction(Transaction transaction) {
-    // TODO: implement removeTransaction
-    throw UnimplementedError();
+  Future<int> removeTransaction(Transaction transaction) async {
+    Database database = await DatabaseHelper.instance.database;
+
+    return (await database.delete('transactions',
+        where: 'tag = ?', whereArgs: [transaction.getTag()]));
   }
-
-
 }

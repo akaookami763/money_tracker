@@ -39,4 +39,10 @@ class TransactionServiceMock extends TransactionService {
     // TODO: implement updateTransaction
     throw UnimplementedError();
   }
+
+  @override
+  Future<Transaction> deleteTransaction(Transaction transaction) {
+    // TODO: implement deleteTransaction
+    throw UnimplementedError();
+  }
 }

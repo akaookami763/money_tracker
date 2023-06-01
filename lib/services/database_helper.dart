@@ -17,7 +17,7 @@ class DatabaseHelper {
 
   _initDatabase() async {
     String path = join(await getDatabasesPath(), "money.db");
-    print(path);
+    print(path); // TODO: Remove once everything is tested and done
     return await openDatabase(path,
         version: 1,
         onCreate: _onCreate);

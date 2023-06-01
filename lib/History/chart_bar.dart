@@ -30,8 +30,9 @@ class ChartBar extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-            )
+            ),
           ])),
+      Text(label)
     ]);
   }
 }

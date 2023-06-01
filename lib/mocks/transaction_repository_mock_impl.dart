@@ -80,4 +80,10 @@ class TransactionRepositoryMockImpl extends TransactionRepository {
           // TODO: implement removeTransaction
           throw UnimplementedError();
         }
+        
+          @override
+          Future<Transaction> getTransactionByTag(int tag) {
+            // TODO: implement getTransactionByTag
+            throw UnimplementedError();
+          }
 }

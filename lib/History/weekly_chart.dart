@@ -15,6 +15,23 @@ class WeeklyChart extends StatelessWidget {
 
   const WeeklyChart(this.weeklyTransactions);
 
+  double totalYearlyCost(List<Transaction> transactions) {
+    Iterable<Transaction> allTransactionsThisYear =
+          weeklyTransactions.where((transaction) {
+        return transaction.getDate().year == DateTime.now().year;
+      });
+    Iterable<double> costs = allTransactionsThisYear.map((e) {
+      return e.getCost();
+    });
+    return costs.isEmpty
+        ? 0.0
+        : costs.reduce(
+            (value, element) {
+              return value + element;
+            },
+          );
+  }
+
   List<ChartData> get groupedTransactionValues {
     if (weeklyTransactions.isEmpty) {
       return [];
@@ -37,7 +54,8 @@ class WeeklyChart extends StatelessWidget {
               },
             );
 
-      return ChartData(DateFormat.E().format(weekDay).substring(0, 1), totalSum);
+      return ChartData(
+          DateFormat.E().format(weekDay).substring(0, 1), totalSum);
     });
   }
 
@@ -54,14 +72,19 @@ class WeeklyChart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-        elevation: 6,
-        margin: EdgeInsets.all(20),
-        child: Row(
+      elevation: 6,
+      margin: EdgeInsets.all(20),
+      child: Column(children: [
+        Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: groupedTransactionValues.map(
               (data) {
-                return ChartBar(data.day, data.amount, percentageSpent(data.amount));
+                return ChartBar(
+                    data.day, data.amount, percentageSpent(data.amount));
               },
-            ).toList()));
+            ).toList()),
+        Text('Total Spent This Year: ${totalYearlyCost(weeklyTransactions)}'),
+      ]),
+    );
   }
 }

@@ -9,4 +9,5 @@ abstract class CategoryListViewViewModel {
   Future initialAction();
   void updateSuggestions(String userInput);
   Future addTransaction(String userInput, String amount);
+  Future removeCategory(String categoryName);
 }
