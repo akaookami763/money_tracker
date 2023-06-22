@@ -26,9 +26,9 @@ class _TransactionHistoryState extends State<TransactionHistory> {
 
   void _deleteTransaction(Transaction transaction) {
     _viewModel.deleteTransaction(transaction).then((value) {
-      setState(() {
-        
-      });
+      setState(() {});
+      ScaffoldMessenger.of(context).clearSnackBars(); // For removing older snackbars that weren't dismissed yet
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("You Deleted a Transaction")));
     });
   }
 
@@ -42,12 +42,27 @@ class _TransactionHistoryState extends State<TransactionHistory> {
       itemCount: _viewModel.allTransactions.length,
       itemBuilder: (ctx, index) => Dismissible(
         key: ValueKey(_viewModel.allTransactions[index]),
-         child: TransactionView(_viewModel.allTransactions[index]),
-         direction: DismissDirection.endToStart,
-         onDismissed: (direction) {
+        background: Container(
+          color: Colors.red,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+        child: TransactionView(_viewModel.allTransactions[index]),
+        direction: DismissDirection.endToStart,
+        onDismissed: (direction) {
           _deleteTransaction(_viewModel.allTransactions[index]);
-         } ,)
-          ,
+        },
+      ),
     );
   }
 }

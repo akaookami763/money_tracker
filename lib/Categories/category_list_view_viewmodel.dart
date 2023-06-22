@@ -11,6 +11,9 @@ class CategoryListViewViewModelImpl extends CategoryListViewViewModel {
   DateTime currentDate = DateTime.now();
 
   @override
+  // TODO: implement notes
+  String get notes => super.notes;
+  @override
   List<FinancialCategory> get allCategories => _categories;
   @override
   List<Transaction> get recentTransactions =>
@@ -79,7 +82,7 @@ class CategoryListViewViewModelImpl extends CategoryListViewViewModel {
 
     //TODO: Add extraNotes to the UI
     await _tWorker.addTransaction(
-        selectedCategory.tag, currentDate, doubleCost, "");
+        selectedCategory.tag, currentDate, doubleCost, notes);
     _categories = await _cWorker.getAllCategories();
 
     //Reset the date after adding a transaction

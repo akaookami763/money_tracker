@@ -16,11 +16,11 @@ class Transaction {
       required DateTime date,
       required double cost,
       required String extraNotes}) {
-    this._tag = tag;
-    this._category = category;
-    this._date = date;
-    this._cost = cost;
-    this._extraNotes = extraNotes;
+    _tag = tag;
+    _category = category;
+    _date = date;
+    _cost = cost;
+    _extraNotes = extraNotes;
 
 
   }

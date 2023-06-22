@@ -7,6 +7,8 @@ import 'package:money_tracker/History/weekly_chart.dart';
 import 'package:money_tracker/services/category_service.dart';
 import 'package:money_tracker/services/transaction_service.dart';
 
+import '../Utils/DateUtils/date_formatter.dart';
+
 class CategoryListView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -17,11 +19,24 @@ class CategoryListView extends StatefulWidget {
 class _CategoryListViewState extends State<CategoryListView> {
   final _searchController = TextEditingController();
   final _transactionController = TextEditingController();
+  final _notesController = TextEditingController();
   final CategoryListViewViewModelImpl _viewModel =
       CategoryListViewViewModelImpl(CategoryWorker(), TransactionWorker());
 
   void updateCategoryText(FinancialCategory categoryName) {
     _searchController.text = categoryName.name;
+  }
+
+  void _openNotesModal() {
+    showModalBottomSheet(context: context, builder: (context) {
+      return Column(children: [
+        TextField(maxLength: 30, decoration: const InputDecoration(label: Text("Add Notes")), controller: _notesController,),
+        ElevatedButton(onPressed: () {
+          _viewModel.notes = _notesController.text;
+          Navigator.pop(context);
+        }, child: const Text("Add Notes")),
+      ],);
+    });
   }
 
   void _showDatePicker() {
@@ -61,52 +76,77 @@ class _CategoryListViewState extends State<CategoryListView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      TextField(
-        controller: _searchController,
-        decoration: const InputDecoration(hintText: "Find or Add Category"),
-      ),
-      Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _transactionController,
-              decoration:
-                  const InputDecoration(hintText: "How Much Money Was Used?"),
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Padding(
+      padding: EdgeInsets.all(8),
+      child: Column(children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              flex: 15,
+              child: TextField(
+                textInputAction: TextInputAction.next,
+                controller: _searchController,
+                decoration:
+                    const InputDecoration(hintText: "Find or Add Category"),
+              ),
             ),
-          ),
-          Column(
-            children: [
-              IconButton(
-                  onPressed: _showDatePicker,
-                  icon: const Icon(Icons.calendar_month)),
-              Text(DateFormat.yMd()
-                  .format(_viewModel.currentDate)),
-            ],
-          )
-        ],
-      ),
-      ElevatedButton(
-          onPressed: () async {
-            await _viewModel.addTransaction(
-                _searchController.text, _transactionController.text);
-            setState(() {
-              _searchController.text = "";
-              _transactionController.text = "";
-            });
-          },
-          child: const Text("Add Transaction")),
-      if (_viewModel.recentTransactions.isNotEmpty)
-        WeeklyChart(_viewModel.recentTransactions),
-      (_viewModel.allCategories.isEmpty)
-          ? Text("No Categories Yet.  Make One By Adding a Transaction!")
-          : Expanded(
-              child: GridView.count(
-              crossAxisCount: 2,
-              children: _viewModel.allSuggestions.entries.map((value) {
-                return CategoryView(value.key, value.value, updateCategoryText);
-              }).toList(),
-            ))
-    ]);
+            Spacer(flex: 1,),
+            Expanded(
+              flex: 15,
+              child: TextField(
+                controller: _transactionController,
+                keyboardType: TextInputType.number,
+                decoration:
+                    const InputDecoration(hintText: "How Much?"),
+              ),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              children: [
+                IconButton(
+                    onPressed: _showDatePicker,
+                    icon: const Icon(Icons.calendar_month)),
+                Text(dateFormatter.format(_viewModel.currentDate)),
+              ],
+            ),
+                        ElevatedButton(
+                onPressed: () async {
+                  _openNotesModal();
+                },
+                child: const Text("Notes")),
+            ElevatedButton(
+
+                onPressed: () async {
+                  await _viewModel.addTransaction(
+                      _searchController.text, _transactionController.text);
+                  setState(() {
+                    _searchController.text = "";
+                    _transactionController.text = "";
+                    _notesController.text = "";
+                  });
+                },
+                child: const Text("Add Transaction")),
+          ],
+        ),
+        (_viewModel.allCategories.isEmpty)
+            ? Text("No Categories Yet.  Make One By Adding a Transaction!")
+            : Expanded(
+                child: GridView.count(
+                crossAxisCount: 2,
+                children: _viewModel.allSuggestions.entries.map((value) {
+                  return CategoryView(
+                      value.key, value.value, updateCategoryText);
+                }).toList(),
+              )),
+      ]),
+    ),
+    );
   }
 }

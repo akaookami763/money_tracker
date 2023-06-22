@@ -17,7 +17,7 @@ class HomePage extends StatelessWidget {
       body: TabBarView(children: [
         CategoryListView(),
         TransactionHistory(),
-        Tab(icon: Icon(Icons.star_outline_sharp))
+        Tab(child: Text("Budget Feature Coming Soon!")),
       ]),));
 
     // return Scaffold(
