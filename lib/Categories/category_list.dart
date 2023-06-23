@@ -4,8 +4,8 @@ import 'package:money_tracker/Categories/category_list_view_viewmodel.dart';
 import 'package:money_tracker/Categories/category_view.dart';
 import 'package:money_tracker/DataCentral/financial_category_model.dart';
 import 'package:money_tracker/History/weekly_chart.dart';
-import 'package:money_tracker/services/category_service.dart';
-import 'package:money_tracker/services/transaction_service.dart';
+import 'package:money_tracker/services/category_worker.dart';
+import 'package:money_tracker/services/transaction_worker.dart';
 
 import '../Utils/DateUtils/date_formatter.dart';
 

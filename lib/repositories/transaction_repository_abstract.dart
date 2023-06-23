@@ -6,7 +6,9 @@ abstract class TransactionRepository {
   Future<List<Transaction>> getAllTransactions();
   Future<List<Transaction>> getAllTransactionsFor(FinancialCategory category);
   Future<Transaction> getTransactionByTag(int tag);
-  
-  Future<int> createTransaction(int category, DateTime date, double cost, String extraNotes);
+  Future<int> updateTransaction(Transaction transaction);
+
+  Future<int> createTransaction(
+      int category, DateTime date, double cost, String extraNotes);
   Future<int> removeTransaction(Transaction transaction);
 }

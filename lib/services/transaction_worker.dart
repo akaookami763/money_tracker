@@ -7,11 +7,11 @@ import 'package:sqflite/sqflite.dart' hide Transaction;
 import 'database_helper.dart';
 
 class TransactionWorker extends TransactionService {
-
   TransactionRepository repository = TransactionRepositoryImpl();
 
   @override
-  Future<List<Transaction>> addTransaction(int category, DateTime date, double cost, String extraNotes) async {
+  Future<List<Transaction>> addTransaction(
+      int category, DateTime date, double cost, String extraNotes) async {
     final int = repository.createTransaction(category, date, cost, extraNotes);
 
     return getAllTransactions();
@@ -29,26 +29,22 @@ class TransactionWorker extends TransactionService {
   }
 
   @override
-  Future<List<Transaction>> updateTransaction(Transaction transaction) async { //TODO: Move into repository
-    Database database = await DatabaseHelper.instance.database;
-    Map<String, dynamic> row = {
-      'tag': transaction.getTag().hashCode,
-      'category': transaction.getCategory().tag.hashCode,
-      'cost': transaction.getCost(),
-      'date': transaction.getDate().toIso8601String(),
-      'extraNotes': transaction.getNotes()
-    };
-    database.update('transactions', row);
-    return getAllTransactions();
+  Future<Transaction> updateTransaction(Transaction transaction) async {
+    final int success = await repository.updateTransaction(transaction);
+    if (success == 1) {
+      return transaction;
+    } else {
+      print(success);
+      throw Error();
+    }
   }
 
   @override
   Future<Transaction> deleteTransaction(Transaction transaction) async {
     final int success = await repository.removeTransaction(transaction);
-    if(success == 1) {
+    if (success == 1) {
       return transaction;
-    }
-    else {
+    } else {
       throw Error();
     }
   }

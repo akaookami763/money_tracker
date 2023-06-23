@@ -35,7 +35,7 @@ class TransactionServiceMock extends TransactionService {
   }
 
   @override
-  Future<List<Transaction>> updateTransaction(Transaction transaction) {
+  Future<Transaction> updateTransaction(Transaction transaction) {
     // TODO: implement updateTransaction
     throw UnimplementedError();
   }

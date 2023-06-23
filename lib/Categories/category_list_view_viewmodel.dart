@@ -80,7 +80,6 @@ class CategoryListViewViewModelImpl extends CategoryListViewViewModel {
       selectedCategory = categories[0]; //There will only be 1 filtered category
     }
 
-    //TODO: Add extraNotes to the UI
     await _tWorker.addTransaction(
         selectedCategory.tag, currentDate, doubleCost, notes);
     _categories = await _cWorker.getAllCategories();

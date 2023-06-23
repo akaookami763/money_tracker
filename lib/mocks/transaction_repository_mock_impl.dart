@@ -57,33 +57,40 @@ class TransactionRepositoryMockImpl extends TransactionRepository {
             cost: 0.54,
             extraNotes: ""),
       ];
-      
-        @override
-        Future<int> createTransaction(int category, DateTime date, double cost, String extraNotes) {
-          // TODO: implement createTransaction
-          throw UnimplementedError();
-        }
-      
-        @override
-        Future<List<Transaction>> getAllTransactions() {
-          return Future(() => sampleTransactions());
-        }
-      
-        @override
-        Future<List<Transaction>> getAllTransactionsFor(FinancialCategory category) {
-          // TODO: implement getAllTransactionsFor
-          throw UnimplementedError();
-        }
-      
-        @override
-        Future<int> removeTransaction(Transaction transaction) {
-          // TODO: implement removeTransaction
-          throw UnimplementedError();
-        }
-        
-          @override
-          Future<Transaction> getTransactionByTag(int tag) {
-            // TODO: implement getTransactionByTag
-            throw UnimplementedError();
-          }
+
+  @override
+  Future<int> createTransaction(
+      int category, DateTime date, double cost, String extraNotes) {
+    // TODO: implement createTransaction
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Transaction>> getAllTransactions() {
+    return Future(() => sampleTransactions());
+  }
+
+  @override
+  Future<List<Transaction>> getAllTransactionsFor(FinancialCategory category) {
+    // TODO: implement getAllTransactionsFor
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<int> updateTransaction(Transaction transaction) {
+    // TODO: implement updateTransaction
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<int> removeTransaction(Transaction transaction) {
+    // TODO: implement removeTransaction
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Transaction> getTransactionByTag(int tag) {
+    // TODO: implement getTransactionByTag
+    throw UnimplementedError();
+  }
 }

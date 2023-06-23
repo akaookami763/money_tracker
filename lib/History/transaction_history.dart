@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:money_tracker/History/transaction_history_view_model.dart';
 import 'package:money_tracker/Transactions/transaction_view.dart';
-import 'package:money_tracker/services/transaction_service.dart';
+import 'package:money_tracker/services/transaction_worker.dart';
 
 import '../DataCentral/transaction_model.dart';
 

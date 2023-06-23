@@ -58,6 +58,23 @@ class TransactionRepositoryImpl extends TransactionRepository {
   }
 
   @override
+  Future<int> updateTransaction(Transaction transaction) async {
+    Database database = await DatabaseHelper.instance.database;
+    String whereString = 'tag = ?';
+    Map<String, dynamic> row = {
+      'category': transaction.getCategory().tag,
+      'cost': transaction.getCost(),
+      'date': transaction.getDate().millisecondsSinceEpoch,
+      'extraNotes': transaction.getNotes()
+    };
+    // database.rawUpdate('''UPDATE transactions
+    //  SET category = ?, cost = ?, date = ?, extraNotes = ?
+    //  WHERE tag = ?
+    //  ''', [transaction.getCategory().tag.hashCode, transaction.getCost(), transaction.getDate(), transaction.getTag()]);
+    return database.update('transactions', row, where: whereString, whereArgs: [transaction.getTag()]);
+  }
+
+  @override
   Future<int> removeTransaction(Transaction transaction) async {
     Database database = await DatabaseHelper.instance.database;
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:money_tracker/Categories/category_list.dart';
 import 'package:money_tracker/DataCentral/transaction_model.dart';
+import 'package:money_tracker/Transactions/transaction_edit_view.dart';
 import 'package:money_tracker/Transactions/transaction_view_viewmodel.dart';
 
 import '../Utils/DateUtils/date_formatter.dart';
@@ -18,6 +20,19 @@ class TransactionView extends StatefulWidget {
 class _TransactionViewState extends State<TransactionView> {
   final TransactionViewViewModel _viewModel = TransactionViewViewModelImpl();
 
+  void _finishEdit() {
+    setState(() {});
+  }
+
+  void _editTransaction() {
+    showModalBottomSheet(
+      isScrollControlled: true,
+        context: context,
+        builder: ((context) {
+          return TransactionEditView(widget.transaction, _finishEdit);
+        }));
+  }
+
   @override
   Widget build(BuildContext context) {
     Transaction transaction = this.widget.transaction;
@@ -25,6 +40,7 @@ class _TransactionViewState extends State<TransactionView> {
         onTap: () => setState(() {
               _viewModel.showNotes = !_viewModel.showNotes;
             }),
+        onLongPress: () => _editTransaction(),
         child: Card(
           color: Color.fromARGB(130, 161, 235, 95),
           shadowColor: Colors.purple,

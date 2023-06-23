@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:money_tracker/DataCentral/financial_category_model.dart';
 import 'package:money_tracker/Utils/DateUtils/date_picker_params.dart';
 import 'package:money_tracker/services/category_service_abstract.dart';
-import 'package:money_tracker/services/transaction_service.dart';
+import 'package:money_tracker/services/transaction_worker.dart';
 
 import '../DataCentral/transaction_model.dart';
-import '../services/category_service.dart';
+import '../services/category_worker.dart';
 import '../services/transaction_service_abstract.dart';
 
 class CategoryViewViewModel extends ChangeNotifier {
