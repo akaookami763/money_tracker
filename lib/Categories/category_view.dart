@@ -11,19 +11,12 @@ class CategoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(child: Container(
-      margin: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        border: Border.all(
-          width: 5,
-          color: Colors.purple
-        ),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(children: [
-        Text(category.name),
-        Text(cost.toStringAsFixed(2))
+      padding: EdgeInsets.all(12),
+      decoration: BoxDecoration(boxShadow:[BoxShadow(spreadRadius: 1, blurRadius: 10, blurStyle: BlurStyle.solid)] , borderRadius: BorderRadius.circular(3), color: Colors.purple),
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        Text(category.name, style: TextStyle(color: Color.fromARGB(255, 226, 224, 224), fontSize: 12),),
+        Text(cost.toStringAsFixed(2), style: TextStyle(color: Color.fromARGB(255, 226, 224, 224), fontSize: 12),)
       ],
-      mainAxisAlignment: MainAxisAlignment.center,
     )
     ),
     onTap: () {

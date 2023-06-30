@@ -28,15 +28,25 @@ class _CategoryListViewState extends State<CategoryListView> {
   }
 
   void _openNotesModal() {
-    showModalBottomSheet(context: context, builder: (context) {
-      return Column(children: [
-        TextField(maxLength: 30, decoration: const InputDecoration(label: Text("Add Notes")), controller: _notesController,),
-        ElevatedButton(onPressed: () {
-          _viewModel.notes = _notesController.text;
-          Navigator.pop(context);
-        }, child: const Text("Add Notes")),
-      ],);
-    });
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Column(
+            children: [
+              TextField(
+                maxLength: 30,
+                decoration: const InputDecoration(label: Text("Add Notes")),
+                controller: _notesController,
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    _viewModel.notes = _notesController.text;
+                    Navigator.pop(context);
+                  },
+                  child: const Text("Add Notes")),
+            ],
+          );
+        });
   }
 
   void _showDatePicker() {
@@ -79,74 +89,71 @@ class _CategoryListViewState extends State<CategoryListView> {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Padding(
-      padding: EdgeInsets.all(8),
-      child: Column(children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              flex: 15,
-              child: TextField(
-                textInputAction: TextInputAction.next,
-                controller: _searchController,
-                decoration:
-                    const InputDecoration(hintText: "Find or Add Category"),
+        padding: EdgeInsets.all(8),
+        child: Column(children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                flex: 15,
+                child: TextField(
+                  textInputAction: TextInputAction.next,
+                  controller: _searchController,
+                  decoration:
+                      const InputDecoration(hintText: "Find or Add Category"),
+                ),
               ),
-            ),
-            Spacer(flex: 1,),
-            Expanded(
-              flex: 15,
-              child: TextField(
-                controller: _transactionController,
-                keyboardType: TextInputType.number,
-                decoration:
-                    const InputDecoration(hintText: "How Much?"),
+              Spacer(
+                flex: 1,
               ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              children: [
-                IconButton(
-                    onPressed: _showDatePicker,
-                    icon: const Icon(Icons.calendar_month)),
-                Text(dateFormatter.format(_viewModel.currentDate)),
-              ],
-            ),
-                        ElevatedButton(
-                onPressed: () async {
-                  _openNotesModal();
-                },
-                child: const Text("Notes")),
-            ElevatedButton(
-
-                onPressed: () async {
-                  await _viewModel.addTransaction(
-                      _searchController.text, _transactionController.text);
-                  setState(() {
-                    _searchController.text = "";
-                    _transactionController.text = "";
-                    _notesController.text = "";
-                  });
-                },
-                child: const Text("Add Transaction")),
-          ],
-        ),
-        (_viewModel.allCategories.isEmpty)
-            ? Text("No Categories Yet.  Make One By Adding a Transaction!")
-            : Expanded(
-                child: GridView.count(
-                crossAxisCount: 2,
-                children: _viewModel.allSuggestions.entries.map((value) {
-                  return CategoryView(
-                      value.key, value.value, updateCategoryText);
-                }).toList(),
-              )),
-      ]),
-    ),
+              Expanded(
+                flex: 15,
+                child: TextField(
+                  controller: _transactionController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(hintText: "How Much?"),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              TextButton.icon( onPressed: _showDatePicker, icon: Icon(Icons.calendar_month), label: Text(dateFormatter.format(_viewModel.currentDate)),),
+              ElevatedButton(
+                  onPressed: () async {
+                    _openNotesModal();
+                  },
+                  child: const Text("Notes")),
+              ElevatedButton(
+                  onPressed: () async {
+                    await _viewModel.addTransaction(
+                        _searchController.text, _transactionController.text);
+                    setState(() {
+                      _searchController.text = "";
+                      _transactionController.text = "";
+                      _notesController.text = "";
+                    });
+                  },
+                  child: const Text("Add Transaction")),
+            ],
+          ),
+          (_viewModel.allCategories.isEmpty)
+              ? Text("No Categories Yet.  Make One By Adding a Transaction!")
+              : Expanded(
+                  child: GridView.count(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 1.5,
+                  children: _viewModel.allSuggestions.entries.map((value) {
+                    return CategoryView(
+                        value.key, value.value, updateCategoryText);
+                  }).toList(),
+                )),
+        ]),
+      ),
     );
   }
 }
