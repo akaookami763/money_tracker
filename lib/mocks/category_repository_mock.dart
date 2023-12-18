@@ -51,5 +51,11 @@ class FinancialCategoryRepositoryMock extends FinancialCategoryRepository {
        return 0;
     });
   }
+  
+  @override
+  Future<int> updateCategoryByName(int tag, String name) {
+    // TODO: implement updateCategoryByName
+    throw UnimplementedError();
+  }
 
 }

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:money_tracker/DataCentral/transaction_model.dart';
 
 import '../services/transaction_service_abstract.dart';
@@ -26,12 +26,8 @@ class TransactionHistoryViewModelImpl extends TransactionHistoryViewModel {
 
   @override
   Future deleteTransaction(Transaction transaction) async {
-    try {
-     final Transaction removedTransaction = await _tWorker.deleteTransaction(transaction);
-      _transactions.remove(removedTransaction);
-    } catch (e) {
-      print(e.toString());
-    }
+    _transactions.remove(transaction);
+
   }
 
   @override

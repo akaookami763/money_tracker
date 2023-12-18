@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:money_tracker/History/transaction_history_view_model.dart';
+import 'package:money_tracker/TopLevel/transaction_viewmodelimpl.dart';
 import 'package:money_tracker/Transactions/transaction_view.dart';
+import 'package:money_tracker/repositories/transaction_repository.dart';
 import 'package:money_tracker/services/transaction_worker.dart';
+import 'package:provider/provider.dart';
 
-import '../DataCentral/transaction_model.dart';
 
 class TransactionHistory extends StatefulWidget {
   @override
@@ -14,7 +16,7 @@ class TransactionHistory extends StatefulWidget {
 
 class _TransactionHistoryState extends State<TransactionHistory> {
   final TransactionHistoryViewModel _viewModel =
-      TransactionHistoryViewModelImpl(TransactionWorker());
+      TransactionHistoryViewModelImpl(TransactionWorker(TransactionRepositoryImpl()));
 
   @override
   void initState() {
@@ -24,16 +26,16 @@ class _TransactionHistoryState extends State<TransactionHistory> {
     });
   }
 
-  void _deleteTransaction(Transaction transaction) {
-    _viewModel.deleteTransaction(transaction).then((value) {
-      setState(() {});
-      ScaffoldMessenger.of(context).clearSnackBars(); // For removing older snackbars that weren't dismissed yet
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("You Deleted a Transaction")));
-    });
+  void _deleteTransaction() {
+    ScaffoldMessenger.of(context)
+        .clearSnackBars(); // For removing older snackbars that weren't dismissed yet
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("You Deleted a Transaction")));
   }
 
   @override
   Widget build(BuildContext context) {
+    final transactions = context.watch<TransactionViewModelImpl>();
     if (_viewModel.allTransactions.isEmpty) {
       return Text(
           "Still Loading Transactions"); // TODO: Refactor to split between loading state and having no data
@@ -60,7 +62,11 @@ class _TransactionHistoryState extends State<TransactionHistory> {
         child: TransactionView(_viewModel.allTransactions[index]),
         direction: DismissDirection.endToStart,
         onDismissed: (direction) {
-          _deleteTransaction(_viewModel.allTransactions[index]);
+          transactions.deleteTransaction(_viewModel.allTransactions[index]);
+
+          _viewModel
+              .deleteTransaction(_viewModel.allTransactions[index])
+              .then((value) => _deleteTransaction());
         },
       ),
     );

@@ -17,7 +17,30 @@ class CategoryServiceMock extends CategoryService {
   }
 
   @override
-  Future<int> removeCategory(FinancialCategory category) {
-    return repo.removeCategory(category);
+  Future<FinancialCategory> removeCategory(FinancialCategory category) async {
+    int result = await repo.removeCategory(category);
+    if (result == 1) {
+      return category;
+    } else {
+      throw Error();
+    }
+  }
+  
+  @override
+  Future<FinancialCategory> updateCategory(int categoryId, String newName) {
+    // TODO: implement updateCategory
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<FinancialCategory?> getCategoryByName(String name) {
+    // TODO: implement getCategoryByName
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<FinancialCategory?> getCategoryByTag(int tag) {
+    // TODO: implement getCategoryByTag
+    throw UnimplementedError();
   }
 }

@@ -1,27 +1,16 @@
-import 'package:flutter/foundation.dart';
 import 'package:money_tracker/DataCentral/financial_category_model.dart';
-import 'package:money_tracker/Utils/DateUtils/date_picker_params.dart';
-import 'package:money_tracker/services/category_service_abstract.dart';
+import 'package:money_tracker/DataCentral/transaction_model.dart';
+import 'package:money_tracker/repositories/transaction_repository.dart';
+import 'package:money_tracker/services/transaction_service_abstract.dart';
 import 'package:money_tracker/services/transaction_worker.dart';
 
-import '../DataCentral/transaction_model.dart';
-import '../services/category_worker.dart';
-import '../services/transaction_service_abstract.dart';
-
-class CategoryViewViewModel extends ChangeNotifier {
-  List<Transaction> _transactions = [];
+class CategoryViewViewModel {
   final FinancialCategory _category;
 
 CategoryViewViewModel(this._category);
-  CategoryService worker = CategoryWorker();
-  TransactionService tWorker = TransactionWorker();
+  final TransactionService _transactionService = TransactionWorker(TransactionRepositoryImpl());
 
-  List<Transaction> get transactions => _transactions;
   FinancialCategory get category => _category;
-
-  Future<void> initialActions() async {
-    _transactions = await tWorker.getAllTransactionsFor(category);
-  }
 
   void costIncrease(String cost, DateTime date,
       String extraNotes) async {
@@ -30,13 +19,18 @@ CategoryViewViewModel(this._category);
       return;
     }
 
-    _transactions = await tWorker.addTransaction(
+    int result = await _transactionService.addTransaction(
         _category.tag, date, doubleCost, extraNotes);
 
-    updateSum();
-    monthlySum();
+    if (result == 1) {
+    List<Transaction> transactions = await _transactionService.getAllTransactions();
+              updateSum(transactions);
+    monthlySum(transactions);
 
-    notifyListeners();
+    } else {
+      //Handle error
+    }
+
   }
 
   void costDecrease(String category, String cost, DateTime date,
@@ -46,22 +40,26 @@ CategoryViewViewModel(this._category);
       return;
     }
 
-    _transactions = await tWorker.addTransaction(
-        _category.tag, date, doubleCost * -1, extraNotes);
+    int result = await _transactionService.addTransaction(
+        _category.tag, date, doubleCost, extraNotes);
 
-    updateSum();
-    monthlySum();
+    if (result == 1) {
+    List<Transaction> transactions = await _transactionService.getAllTransactions();
+              updateSum(transactions);
+    monthlySum(transactions);
 
-    notifyListeners();
+    } else {
+      //Handle error
+    }
   }
 
-  double updateSum() {
-    return _transactions
+  double updateSum(List<Transaction> transactions) {
+    return transactions
         .map((e) => e.getCost())
         .reduce((value, element) => value + element);
   }
 
-  double monthlySum() {
+  double monthlySum(List<Transaction> transactions) {
     int currentMonth = DateTime.now().month;
     List<Transaction> monthlyTransactions = transactions
         .where((transaction) => transaction.getDate().month == currentMonth)

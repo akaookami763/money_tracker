@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:money_tracker/History/transaction_history.dart';
 
-import '../Categories/category_list.dart';
+import '../Categories/list/category_list.dart';
 
 class HomePage extends StatelessWidget {
   @override

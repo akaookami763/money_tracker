@@ -6,6 +6,7 @@ import '../DataCentral/transaction_model.dart';
 
 class TransactionRepositoryMockImpl extends TransactionRepository {
   var _transactions = <Transaction>[];
+  var operationWillError = false;
 
   List<Transaction> sampleTransactions() => [
         Transaction(
@@ -61,8 +62,7 @@ class TransactionRepositoryMockImpl extends TransactionRepository {
   @override
   Future<int> createTransaction(
       int category, DateTime date, double cost, String extraNotes) {
-    // TODO: implement createTransaction
-    throw UnimplementedError();
+    return Future(() => operationWillError ? -1 : 1);
   }
 
   @override

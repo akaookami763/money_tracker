@@ -11,8 +11,18 @@ class BudgetViewModelImpl implements BudgetViewModel {
   BudgetService worker = BudgetWorker();
 
   @override
+  void setupBudgetItem() {
+    // TODO: implement setupBudgetItem
+  }
+
+  @override
   void createBudgetItem(String title) {
     worker.createBudgetCategory(title);
+  }
+
+  @override
+  void editBudgetItem(BudgetCategory category) {
+    // TODO: implement editBudgetItem
   }
 
   @override

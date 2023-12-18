@@ -9,13 +9,6 @@ class TransactionServiceMock extends TransactionService {
   TransactionRepository repo = TransactionRepositoryMockImpl();
 
   @override
-  Transaction createTransaction(FinancialCategory category, double cost,
-      DateTime date, String extraNotes) {
-    // TODO: implement createTransaction
-    throw UnimplementedError();
-  }
-
-  @override
   Future<List<Transaction>> getAllTransactions() {
     return Future(() => repo.getAllTransactions());
   }
@@ -26,12 +19,8 @@ class TransactionServiceMock extends TransactionService {
   }
 
   @override
-  Future<List<Transaction>> addTransaction(int category, DateTime date, double cost, String extraNotes) async {
-    int result = await repo.createTransaction(category, date, cost, extraNotes);
-    if (result == 1) {
-      return repo.getAllTransactions();
-    }
-    return Future(() => []);
+  Future<int> addTransaction(int category, DateTime date, double cost, String extraNotes) async {
+    return await repo.createTransaction(category, date, cost, extraNotes);
   }
 
   @override
@@ -43,6 +32,18 @@ class TransactionServiceMock extends TransactionService {
   @override
   Future<Transaction> deleteTransaction(Transaction transaction) {
     // TODO: implement deleteTransaction
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<FinancialCategory?> createCategory(String categoryName) {
+    // TODO: implement createCategory
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<FinancialCategory?> findCategory(String categoryName) {
+    // TODO: implement findCategory
     throw UnimplementedError();
   }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:money_tracker/Categories/category_list.dart';
 import 'package:money_tracker/DataCentral/transaction_model.dart';
 import 'package:money_tracker/Transactions/transaction_edit_view.dart';
 import 'package:money_tracker/Transactions/transaction_view_viewmodel.dart';

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:money_tracker/Home/home_page.dart';
+import 'package:money_tracker/TopLevel/provider_config.dart';
 
 void main() {
   runApp(const MyApp());
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         appBarTheme: AppBarTheme(titleTextStyle: TextStyle(fontFamily: 'Quicksand', fontSize: 20, fontWeight: FontWeight.normal))
       ),
-      home: HomePage(),
+      home: const MTProvider(),
     );
   }
 }

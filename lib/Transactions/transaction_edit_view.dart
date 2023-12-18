@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:money_tracker/Categories/item/category_name_view.dart';
 import 'package:money_tracker/Transactions/transaction_edit_view_viewModel.dart';
 import 'package:money_tracker/Transactions/transaction_edit_view_viewmodelimpl.dart';
+import 'package:money_tracker/repositories/category_repository.dart';
+import 'package:money_tracker/repositories/transaction_repository.dart';
 import 'package:money_tracker/services/category_worker.dart';
 import 'package:money_tracker/services/transaction_worker.dart';
 
-import '../Categories/category_name_view.dart';
 import '../DataCentral/transaction_model.dart';
 import '../Utils/DateUtils/date_formatter.dart';
 
@@ -78,7 +79,7 @@ class _TransactionEditViewState extends State<TransactionEditView> {
   void initState() {
     super.initState();
     _viewModel = TransactionEditViewViewModelImpl(
-        widget.transaction, CategoryWorker(), TransactionWorker());
+        widget.transaction, CategoryWorker(FinancialCategoryRepositoryImpl()), TransactionWorker(TransactionRepositoryImpl()));
     _viewModel.initialAction().then((value) {
       _notesController.text = _viewModel.transaction.getNotes();
       _searchController.text = _viewModel.transaction.getCategoryName();
