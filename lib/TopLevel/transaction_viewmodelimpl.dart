@@ -9,10 +9,18 @@ import '../DataCentral/financial_category_model.dart';
 
 class TransactionViewModelImpl extends ChangeNotifier
     implements TransactionViewModel {
+      List<Transaction> _transactions = [];
   final TransactionService _transactionService;
   final CategoryService _categoryService;
 
-  TransactionViewModelImpl(this._transactionService, this._categoryService);
+  TransactionViewModelImpl(this._transactionService, this._categoryService) {
+    _updateTransactions();
+  }
+
+  @override
+  List<Transaction> getTransactions() {
+    return _transactions;
+  }
 
   @override
   void createTransaction(String categoryName, String cost, DateTime time,
@@ -42,14 +50,14 @@ class TransactionViewModelImpl extends ChangeNotifier
           selectedCategory.tag, time, doubleCost, extraNotes);
     }
 
-    notifyListeners();
+    _updateTransactions();
   }
 
   @override
   void deleteTransaction(Transaction transaction) async {
     await _transactionService.deleteTransaction(transaction);
 
-    notifyListeners();
+    _updateTransactions();
   }
 
   @override
@@ -74,6 +82,13 @@ class TransactionViewModelImpl extends ChangeNotifier
         extraNotes: extraNotes);
 
     await _transactionService.updateTransaction(updatedTransaction);
+
+    _updateTransactions();
+  }
+
+  void _updateTransactions() async {
+    _transactions = await _transactionService.getAllTransactions();
+          print("SELFLOG: Notify listeners that transactions have changed");
 
     notifyListeners();
   }

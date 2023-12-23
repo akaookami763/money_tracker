@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:money_tracker/Categories/item/category_view.dart';
 import 'package:money_tracker/Categories/list/category_list_view_viewmodel.dart';
+import 'package:money_tracker/Categories/list/category_list_view_viewmodel_abstract.dart';
 import 'package:money_tracker/DataCentral/financial_category_model.dart';
 import 'package:money_tracker/TopLevel/category_viewmodel.dart';
 import 'package:money_tracker/TopLevel/category_viewmodelimpl.dart';
 import 'package:money_tracker/TopLevel/transaction_viewmodel.dart';
-import 'package:money_tracker/repositories/category_repository.dart';
-import 'package:money_tracker/repositories/transaction_repository.dart';
-import 'package:money_tracker/services/category_worker.dart';
-import 'package:money_tracker/services/transaction_worker.dart';
+import 'package:money_tracker/Utils/DateUtils/date_picker_params.dart';
 import 'package:provider/provider.dart';
 
 import '../../TopLevel/transaction_viewmodelimpl.dart';
@@ -25,10 +23,7 @@ class _CategoryListViewState extends State<CategoryListView> {
   final _searchController = TextEditingController();
   final _transactionController = TextEditingController();
   final _notesController = TextEditingController();
-  final CategoryListViewViewModelImpl _viewModel =
-      CategoryListViewViewModelImpl(
-          CategoryWorker(FinancialCategoryRepositoryImpl()),
-          TransactionWorker(TransactionRepositoryImpl()), []);
+  final CategoryListViewViewModel _viewModel = CategoryListViewViewModelImpl();
 
   void updateCategoryText(FinancialCategory categoryName) {
     _searchController.text = categoryName.name;
@@ -47,7 +42,6 @@ class _CategoryListViewState extends State<CategoryListView> {
               ),
               ElevatedButton(
                   onPressed: () {
-                    _viewModel.notes = _notesController.text;
                     Navigator.pop(context);
                   },
                   child: const Text("Add Notes")),
@@ -57,7 +51,7 @@ class _CategoryListViewState extends State<CategoryListView> {
   }
 
   void _showDatePicker() {
-    final params = _viewModel.getPickerDates();
+    final params = getPickerDates(_viewModel.currentDate);
 
     showDatePicker(
             context: context,
@@ -81,35 +75,54 @@ class _CategoryListViewState extends State<CategoryListView> {
   @override
   void initState() {
     super.initState();
-    _viewModel.initialAction().then((value) {
-      setState(() {});
-    });
+    print("SELFLOG: Start Init on Category List");
+    setState(() {});
     _searchController.addListener(() {
       setState(() {
-        _viewModel.filterSuggestedCategories(_searchController.text);
+        _viewModel.getSuggestedCategories(_searchController.text);
       });
     });
   }
 
-  void updateTransactionsAndCategories(TransactionViewModel transactions, CategoryViewModel categories) async {
+  void updateTransactionsAndCategories(
+      TransactionViewModel transactions, CategoryViewModel categories) async {
+    print(
+        "SELFLOG: Added transaction, so updating the top level state transactions and categories");
     transactions.createTransaction(
-                          _searchController.text,
-                          _transactionController.text,
-                          _viewModel.currentDate,
-                          _notesController.text);
-                      setState(() {
-                        _searchController.text = "";
-                        _transactionController.text = "";
-                        _notesController.text = "";
-                        _viewModel.currentDate = DateTime.now();
-                      });
-    _viewModel.updateCategories(await categories.getAllCategories());
+        _searchController.text,
+        _transactionController.text,
+        _viewModel.currentDate,
+        _notesController.text);
+    setState(() {
+      _searchController.text = "";
+      _transactionController.text = "";
+      _notesController.text = "";
+      _viewModel.currentDate = DateTime.now();
+    });
+  }
+
+  void setLocalCategoriesAndTransactions(
+      CategoryViewModel cVM, TransactionViewModel tVM) {
+    // if (_viewModel.viewState == CategoryListViewState.idle) {
+    //   print("SELFLOG: In idle state, so calling top level state");
+    //   _viewModel.viewState = CategoryListViewState.loading;
+    //   cVM.getCategories();
+    //   tVM.getTransactions();
+    // } else {
+    //   print("SELFLOG: In loading state, so calling data from top level state");
+      _viewModel.updateCategories(cVM.getCategories(), tVM.getTransactions());
+      // _viewModel.viewState = CategoryListViewState.idle;
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer2<TransactionViewModelImpl, CategoryViewModelImpl>(
-        builder: (context, transactions, categories, child) {
+        builder: (context, transactionViewModel, categoriesViewModel, child) {
+                print("SELFLOG: Rerendering with state: ${_viewModel.viewState}");
+
+      setLocalCategoriesAndTransactions(
+          categoriesViewModel, transactionViewModel);
       return GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Padding(
@@ -155,11 +168,12 @@ class _CategoryListViewState extends State<CategoryListView> {
                     },
                     child: const Text("Notes")),
                 ElevatedButton(
-                    onPressed: () => updateTransactionsAndCategories(transactions, categories),
+                    onPressed: () => updateTransactionsAndCategories(
+                        transactionViewModel, categoriesViewModel),
                     child: const Text("Add Transaction")),
               ],
             ),
-            (_viewModel.categories().isEmpty)
+            (_viewModel.getSuggestedCategories(_searchController.text).isEmpty)
                 ? Text("No Categories Yet.  Make One By Adding a Transaction!")
                 : Expanded(
                     child: GridView.count(
@@ -167,7 +181,10 @@ class _CategoryListViewState extends State<CategoryListView> {
                     crossAxisSpacing: 16,
                     mainAxisSpacing: 16,
                     childAspectRatio: 1.5,
-                    children: _viewModel.categories().entries.map((value) {
+                    children: _viewModel
+                        .getSuggestedCategories(_searchController.text)
+                        .entries
+                        .map((value) {
                       return CategoryView(
                           value.key, value.value, updateCategoryText);
                     }).toList(),
