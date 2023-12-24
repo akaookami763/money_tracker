@@ -9,7 +9,8 @@ import '../DataCentral/financial_category_model.dart';
 
 class TransactionViewModelImpl extends ChangeNotifier
     implements TransactionViewModel {
-      List<Transaction> _transactions = [];
+  List<Transaction> _transactions = [];
+  List<FinancialCategory> _categories = [];
   final TransactionService _transactionService;
   final CategoryService _categoryService;
 
@@ -23,55 +24,60 @@ class TransactionViewModelImpl extends ChangeNotifier
   }
 
   @override
-  void createTransaction(String categoryName, String cost, DateTime time,
+  Future<bool> addTransaction(String categoryName, String cost, DateTime time,
       String extraNotes) async {
     double doubleCost = double.tryParse(cost) ?? -1;
     if (doubleCost <= 0) {
-      return; // TODO: Change this function to pass an error for bad parsing
+      return false;
     }
 
     // Get the category used
     FinancialCategory? selectedCategory =
         await _categoryService.getCategoryByName(categoryName);
-
+    bool success;
     // If this is a new category, make it and use it's tag to make the transaction
     if (selectedCategory == null) {
-      int success = await _categoryService.createCategory(categoryName);
-      if (success != 0) {
+      success = await _categoryService.createCategory(categoryName);
+      if (success) {
         FinancialCategory? newCategory =
             await _categoryService.getCategoryByName(categoryName);
         if (newCategory != null) {
-          await _transactionService.addTransaction(
+          success = await _transactionService.addTransaction(
               newCategory.tag, time, doubleCost, extraNotes);
         }
       }
     } else {
-      await _transactionService.addTransaction(
+      success = await _transactionService.addTransaction(
           selectedCategory.tag, time, doubleCost, extraNotes);
     }
-
-    _updateTransactions();
+    if (success) {
+      _updateTransactions();
+    }
+    return success;
   }
 
   @override
-  void deleteTransaction(Transaction transaction) async {
-    await _transactionService.deleteTransaction(transaction);
+  Future<bool> deleteTransaction(Transaction transaction) async {
+    bool success = await _transactionService.deleteTransaction(transaction);
 
-    _updateTransactions();
+    if (success) {
+      _updateTransactions();
+    }
+    return success;
   }
 
   @override
-  void editTransaction(String categoryName, String cost, DateTime date,
+  Future<bool> editTransaction(String categoryName, String cost, DateTime date,
       String extraNotes, Transaction transaction) async {
     double doubleCost = double.tryParse(cost) ?? -1;
     if (doubleCost <= 0) {
-      return; // TODO: Change this function to pass an error for bad parsing
+      return false; // TODO: Change this function to pass an error for bad parsing
     }
     FinancialCategory? selectedCategory =
         await _categoryService.getCategoryByName(categoryName);
 
     if (selectedCategory == null) {
-      return;
+      return false;
     }
 
     Transaction updatedTransaction = Transaction(
@@ -81,15 +87,52 @@ class TransactionViewModelImpl extends ChangeNotifier
         cost: doubleCost,
         extraNotes: extraNotes);
 
-    await _transactionService.updateTransaction(updatedTransaction);
+    bool success =
+        await _transactionService.updateTransaction(updatedTransaction);
 
-    _updateTransactions();
+    if (success) {
+      _updateTransactions();
+    }
+    return success;
   }
+
+  @override
+  List<FinancialCategory> getCategories() {
+    return _categories;
+  }
+
+  @override
+  Future<bool> createCategory(String categoryName) async {
+    bool success = await _categoryService.createCategory(categoryName);
+    if (success) {
+      _updateTransactions();
+    }
+    return success;
+  }
+
+  @override
+  Future<bool> deleteCategory(FinancialCategory category) async {
+    bool success = await _categoryService.removeCategory(category);
+    if (success) {
+      _updateTransactions();
+    }
+    return success;
+  }
+
+  @override
+  Future<bool> updateCategory(FinancialCategory category, newName) async {
+    bool success = await _categoryService.updateCategory(category.tag, newName);
+    if (success) {
+      _updateTransactions();
+    }
+    return success;
+  }
+
+  // MARK: Class Functions
 
   void _updateTransactions() async {
     _transactions = await _transactionService.getAllTransactions();
-          print("SELFLOG: Notify listeners that transactions have changed");
-
+    _categories = await _categoryService.getAllCategories();
     notifyListeners();
   }
 }

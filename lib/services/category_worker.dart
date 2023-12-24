@@ -7,28 +7,21 @@ class CategoryWorker extends CategoryService {
 
   CategoryWorker(this.repository);
   @override
-  Future<int> createCategory(String name) async {
-    return await repository.createCategory(name);
+  Future<bool> createCategory(String name) async {
+    int success = await repository.createCategory(name);
+    return success != 0 ? true : false;
   }
 
   @override
-  Future<FinancialCategory> updateCategory(int categoryId, String newName) async {
+  Future<bool> updateCategory(int categoryId, String newName) async {
     int success = await repository.updateCategoryByName(categoryId, newName);
-    if (success == 1) {
-      return FinancialCategory(categoryId, newName);
-    } else {
-       throw Error();
-    }
+    return success == 1 ? true : false;
   }
 
   @override
-  Future<FinancialCategory> removeCategory(FinancialCategory category) async {
+  Future<bool> removeCategory(FinancialCategory category) async {
     int success = await repository.removeCategory(category);
-    if(success == 1) {
-      return category;
-    } else {
-      throw Error();
-    }
+    return success == 1 ? true : false;
   }
 
   @override

@@ -8,7 +8,7 @@ import '../services/database_helper.dart';
 
 class TransactionRepositoryImpl extends TransactionRepository {
   /// Create a transaction in the database
-  /// Returns: The unique key hash of the transaction if a success, or -1 if there is a failure
+  /// Returns: The unique key hash of the transaction if a success, or 0 if there is a failure
   @override
   Future<int> createTransaction(
       int category, DateTime date, double cost, String extraNotes) async {
@@ -21,7 +21,8 @@ class TransactionRepositoryImpl extends TransactionRepository {
     };
     return await database.insert('transactions', row);
   }
-
+  /// Gets all transaction objects in the database
+  /// Returns: A list of transaction objects
   @override
   Future<List<Transaction>> getAllTransactions() async {
     Database database = await DatabaseHelper.instance.database;
@@ -56,7 +57,8 @@ class TransactionRepositoryImpl extends TransactionRepository {
 
     return Transaction.fromMap(transaction);
   }
-
+  /// Updates a transaction that exists in the database
+  /// Returns: The number of rows changed.  Should always be 1.  If 0 or less, there was an error.  If higher than 1, something went wrong
   @override
   Future<int> updateTransaction(Transaction transaction) async {
     Database database = await DatabaseHelper.instance.database;
@@ -73,7 +75,8 @@ class TransactionRepositoryImpl extends TransactionRepository {
     //  ''', [transaction.getCategory().tag.hashCode, transaction.getCost(), transaction.getDate(), transaction.getTag()]);
     return database.update('transactions', row, where: whereString, whereArgs: [transaction.getTag()]);
   }
-
+  /// Removes a transaction object from the database
+  /// Returns: The number of rows affected by the change.  Should always be 1.  If 0 or less, it failed.  If higher than 1, something went wrong
   @override
   Future<int> removeTransaction(Transaction transaction) async {
     Database database = await DatabaseHelper.instance.database;

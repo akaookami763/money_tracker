@@ -14,7 +14,6 @@ abstract class TransactionEditViewViewModel {
   final TransactionService transactionService;
 
   Future initialAction();
-  Future<bool> editTransaction(String categoryName, String cost, DateTime date, String extraNotes);
   void updateSuggestions(String userInput);
   DatePickerParams getPickerDates();
 

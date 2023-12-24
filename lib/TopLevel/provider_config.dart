@@ -7,8 +7,8 @@ import 'package:money_tracker/services/category_worker.dart';
 import 'package:money_tracker/services/transaction_worker.dart';
 import 'package:provider/provider.dart';
 
-import 'category_viewmodelimpl.dart';
 
+// MT = Money Tracker
 class MTProvider extends StatelessWidget {
   const MTProvider({Key? key}) : super(key: key);
 
@@ -16,9 +16,6 @@ class MTProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
       // TODO: Setup Budget worker
-      ChangeNotifierProvider(
-          create: (context) => CategoryViewModelImpl(
-              CategoryWorker(FinancialCategoryRepositoryImpl()))),
       ChangeNotifierProvider(
           create: (context) => TransactionViewModelImpl(
               TransactionWorker(TransactionRepositoryImpl()),

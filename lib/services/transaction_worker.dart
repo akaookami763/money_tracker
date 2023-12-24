@@ -14,32 +14,26 @@ class TransactionWorker extends TransactionService {
       FinancialCategoryRepositoryImpl();
 
   TransactionWorker(this._repository);
-
+  /// Create a transaction in the database
+  /// Returns: True if it was added.  False if creation failed
   @override
-  Future<int> addTransaction(
+  Future<bool> addTransaction(
       int category, DateTime date, double cost, String extraNotes) async {
-    return _repository.createTransaction(category, date, cost, extraNotes);
+    int success = await _repository.createTransaction(category, date, cost, extraNotes);
+    return success != 0 ? true : false;
+
   }
 
   @override
-  Future<Transaction> updateTransaction(Transaction transaction) async {
-    final int success = await _repository.updateTransaction(transaction);
-    if (success == 1) {
-      return transaction;
-    } else {
-      print(success);
-      throw Error();
-    }
+  Future<bool> updateTransaction(Transaction transaction) async {
+    int success = await _repository.updateTransaction(transaction);
+    return success == 1 ? true : false;
   }
 
   @override
-  Future<Transaction> deleteTransaction(Transaction transaction) async {
-    final int success = await _repository.removeTransaction(transaction);
-    if (success == 1) {
-      return transaction;
-    } else {
-      throw Error();
-    }
+  Future<bool> deleteTransaction(Transaction transaction) async {
+    int success = await _repository.removeTransaction(transaction);
+    return success == 1 ? true : false;
   }
 
   @override
@@ -56,12 +50,9 @@ class TransactionWorker extends TransactionService {
     ).toList();
   }
 
-  Future<FinancialCategory?> createCategory(String categoryName) async {
+  Future<bool> createCategory(String categoryName) async {
     int success = await categoryRepository.createCategory(categoryName);
-    if (success == 0) {
-      return null;
-    }
-    return findCategory(categoryName);
+    return success != 0 ? true : false;
   }
 
   Future<FinancialCategory?> findCategory(String categoryName) async {

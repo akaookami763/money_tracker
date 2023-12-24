@@ -3,14 +3,14 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i5;
+import 'dart:async' as _i4;
 
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i6;
-import 'package:money_tracker/DataCentral/financial_category_model.dart' as _i3;
-import 'package:money_tracker/DataCentral/transaction_model.dart' as _i2;
+import 'package:money_tracker/DataCentral/financial_category_model.dart' as _i2;
+import 'package:money_tracker/DataCentral/transaction_model.dart' as _i5;
 import 'package:money_tracker/repositories/transaction_repository_abstract.dart'
-    as _i4;
+    as _i3;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -25,8 +25,9 @@ import 'package:money_tracker/repositories/transaction_repository_abstract.dart'
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeTransaction_0 extends _i1.SmartFake implements _i2.Transaction {
-  _FakeTransaction_0(
+class _FakeFinancialCategory_0 extends _i1.SmartFake
+    implements _i2.FinancialCategory {
+  _FakeFinancialCategory_0(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -35,19 +36,8 @@ class _FakeTransaction_0 extends _i1.SmartFake implements _i2.Transaction {
         );
 }
 
-class _FakeFinancialCategory_1 extends _i1.SmartFake
-    implements _i3.FinancialCategory {
-  _FakeFinancialCategory_1(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeDateTime_2 extends _i1.SmartFake implements DateTime {
-  _FakeDateTime_2(
+class _FakeDateTime_1 extends _i1.SmartFake implements DateTime {
+  _FakeDateTime_1(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -60,61 +50,55 @@ class _FakeDateTime_2 extends _i1.SmartFake implements DateTime {
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockTransactionRepository extends _i1.Mock
-    implements _i4.TransactionRepository {
+    implements _i3.TransactionRepository {
   MockTransactionRepository() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i5.Future<List<_i2.Transaction>> getAllTransactions() => (super.noSuchMethod(
+  _i4.Future<List<_i5.Transaction>> getAllTransactions() => (super.noSuchMethod(
         Invocation.method(
           #getAllTransactions,
           [],
         ),
         returnValue:
-            _i5.Future<List<_i2.Transaction>>.value(<_i2.Transaction>[]),
-      ) as _i5.Future<List<_i2.Transaction>>);
+            _i4.Future<List<_i5.Transaction>>.value(<_i5.Transaction>[]),
+      ) as _i4.Future<List<_i5.Transaction>>);
 
   @override
-  _i5.Future<List<_i2.Transaction>> getAllTransactionsFor(
-          _i3.FinancialCategory? category) =>
+  _i4.Future<List<_i5.Transaction>> getAllTransactionsFor(
+          _i2.FinancialCategory? category) =>
       (super.noSuchMethod(
         Invocation.method(
           #getAllTransactionsFor,
           [category],
         ),
         returnValue:
-            _i5.Future<List<_i2.Transaction>>.value(<_i2.Transaction>[]),
-      ) as _i5.Future<List<_i2.Transaction>>);
+            _i4.Future<List<_i5.Transaction>>.value(<_i5.Transaction>[]),
+      ) as _i4.Future<List<_i5.Transaction>>);
 
   @override
-  _i5.Future<_i2.Transaction> getTransactionByTag(int? tag) =>
+  _i4.Future<_i5.Transaction?> getTransactionByTag(int? tag) =>
       (super.noSuchMethod(
         Invocation.method(
           #getTransactionByTag,
           [tag],
         ),
-        returnValue: _i5.Future<_i2.Transaction>.value(_FakeTransaction_0(
-          this,
-          Invocation.method(
-            #getTransactionByTag,
-            [tag],
-          ),
-        )),
-      ) as _i5.Future<_i2.Transaction>);
+        returnValue: _i4.Future<_i5.Transaction?>.value(),
+      ) as _i4.Future<_i5.Transaction?>);
 
   @override
-  _i5.Future<int> updateTransaction(_i2.Transaction? transaction) =>
+  _i4.Future<int> updateTransaction(_i5.Transaction? transaction) =>
       (super.noSuchMethod(
         Invocation.method(
           #updateTransaction,
           [transaction],
         ),
-        returnValue: _i5.Future<int>.value(0),
-      ) as _i5.Future<int>);
+        returnValue: _i4.Future<int>.value(0),
+      ) as _i4.Future<int>);
 
   @override
-  _i5.Future<int> createTransaction(
+  _i4.Future<int> createTransaction(
     int? category,
     DateTime? date,
     double? cost,
@@ -130,24 +114,24 @@ class MockTransactionRepository extends _i1.Mock
             extraNotes,
           ],
         ),
-        returnValue: _i5.Future<int>.value(0),
-      ) as _i5.Future<int>);
+        returnValue: _i4.Future<int>.value(0),
+      ) as _i4.Future<int>);
 
   @override
-  _i5.Future<int> removeTransaction(_i2.Transaction? transaction) =>
+  _i4.Future<int> removeTransaction(_i5.Transaction? transaction) =>
       (super.noSuchMethod(
         Invocation.method(
           #removeTransaction,
           [transaction],
         ),
-        returnValue: _i5.Future<int>.value(0),
-      ) as _i5.Future<int>);
+        returnValue: _i4.Future<int>.value(0),
+      ) as _i4.Future<int>);
 }
 
 /// A class which mocks [Transaction].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockTransaction extends _i1.Mock implements _i2.Transaction {
+class MockTransaction extends _i1.Mock implements _i5.Transaction {
   MockTransaction() {
     _i1.throwOnMissingStub(this);
   }
@@ -162,19 +146,19 @@ class MockTransaction extends _i1.Mock implements _i2.Transaction {
       ) as int);
 
   @override
-  _i3.FinancialCategory getCategory() => (super.noSuchMethod(
+  _i2.FinancialCategory getCategory() => (super.noSuchMethod(
         Invocation.method(
           #getCategory,
           [],
         ),
-        returnValue: _FakeFinancialCategory_1(
+        returnValue: _FakeFinancialCategory_0(
           this,
           Invocation.method(
             #getCategory,
             [],
           ),
         ),
-      ) as _i3.FinancialCategory);
+      ) as _i2.FinancialCategory);
 
   @override
   String getCategoryName() => (super.noSuchMethod(
@@ -197,7 +181,7 @@ class MockTransaction extends _i1.Mock implements _i2.Transaction {
           #getDate,
           [],
         ),
-        returnValue: _FakeDateTime_2(
+        returnValue: _FakeDateTime_1(
           this,
           Invocation.method(
             #getDate,
@@ -249,7 +233,7 @@ class MockTransaction extends _i1.Mock implements _i2.Transaction {
       );
 
   @override
-  void editCategory(_i3.FinancialCategory? category) => super.noSuchMethod(
+  void editCategory(_i2.FinancialCategory? category) => super.noSuchMethod(
         Invocation.method(
           #editCategory,
           [category],

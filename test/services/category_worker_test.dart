@@ -24,8 +24,8 @@ void main() {
     when(_mockCategoryRepo.createCategory(categoryName))
         .thenAnswer((realInvocation) async => success);
 
-    int result = await _sut.createCategory(categoryName);
-    expect(result, success);
+    bool result = await _sut.createCategory(categoryName);
+    expect(result, true);
   });
 
   test("create category fails", () async {
@@ -34,8 +34,8 @@ void main() {
     when(_mockCategoryRepo.createCategory(categoryName))
         .thenAnswer((realInvocation) async => success);
 
-    int result = await _sut.createCategory(categoryName);
-    expect(result, success);
+    bool result = await _sut.createCategory(categoryName);
+    expect(result, false);
   });
 
   test("update category name", () async {
@@ -45,10 +45,9 @@ void main() {
             mockCategory.tag, mockCategory.name))
         .thenAnswer((realInvocation) async => success);
 
-    FinancialCategory result =
+    bool result =
         await _sut.updateCategory(mockCategory.tag, mockCategory.name);
-    expect(result.name, mockCategory.name);
-    expect(result.tag, mockCategory.tag);
+    expect(result, true);
   });
 
   test("update category name fails", () async {
@@ -68,9 +67,9 @@ void main() {
     when(_mockCategoryRepo.removeCategory(mockCategory))
     .thenAnswer((realInvocation) async => success);
 
-    FinancialCategory result = await _sut.removeCategory(mockCategory);
+    bool result = await _sut.removeCategory(mockCategory);
 
-    expect(result, mockCategory);
+    expect(result, true);
   });
 
   test("remove category fails", () async {

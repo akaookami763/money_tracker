@@ -3,8 +3,6 @@ import 'package:money_tracker/Categories/item/category_view.dart';
 import 'package:money_tracker/Categories/list/category_list_view_viewmodel.dart';
 import 'package:money_tracker/Categories/list/category_list_view_viewmodel_abstract.dart';
 import 'package:money_tracker/DataCentral/financial_category_model.dart';
-import 'package:money_tracker/TopLevel/category_viewmodel.dart';
-import 'package:money_tracker/TopLevel/category_viewmodelimpl.dart';
 import 'package:money_tracker/TopLevel/transaction_viewmodel.dart';
 import 'package:money_tracker/Utils/DateUtils/date_picker_params.dart';
 import 'package:provider/provider.dart';
@@ -85,10 +83,10 @@ class _CategoryListViewState extends State<CategoryListView> {
   }
 
   void updateTransactionsAndCategories(
-      TransactionViewModel transactions, CategoryViewModel categories) async {
+      TransactionViewModel tVM) async {
     print(
         "SELFLOG: Added transaction, so updating the top level state transactions and categories");
-    transactions.createTransaction(
+    tVM.addTransaction(
         _searchController.text,
         _transactionController.text,
         _viewModel.currentDate,
@@ -101,28 +99,17 @@ class _CategoryListViewState extends State<CategoryListView> {
     });
   }
 
-  void setLocalCategoriesAndTransactions(
-      CategoryViewModel cVM, TransactionViewModel tVM) {
-    // if (_viewModel.viewState == CategoryListViewState.idle) {
-    //   print("SELFLOG: In idle state, so calling top level state");
-    //   _viewModel.viewState = CategoryListViewState.loading;
-    //   cVM.getCategories();
-    //   tVM.getTransactions();
-    // } else {
-    //   print("SELFLOG: In loading state, so calling data from top level state");
-      _viewModel.updateCategories(cVM.getCategories(), tVM.getTransactions());
-      // _viewModel.viewState = CategoryListViewState.idle;
-    // }
+  void setLocalCategoriesAndTransactions(TransactionViewModel tVM) {
+      _viewModel.updateCategories(tVM.getCategories(), tVM.getTransactions());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<TransactionViewModelImpl, CategoryViewModelImpl>(
-        builder: (context, transactionViewModel, categoriesViewModel, child) {
+    return Consumer<TransactionViewModelImpl>(
+        builder: (context, transactionViewModel, child) {
                 print("SELFLOG: Rerendering with state: ${_viewModel.viewState}");
 
-      setLocalCategoriesAndTransactions(
-          categoriesViewModel, transactionViewModel);
+      setLocalCategoriesAndTransactions(transactionViewModel);
       return GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Padding(
@@ -169,7 +156,7 @@ class _CategoryListViewState extends State<CategoryListView> {
                     child: const Text("Notes")),
                 ElevatedButton(
                     onPressed: () => updateTransactionsAndCategories(
-                        transactionViewModel, categoriesViewModel),
+                        transactionViewModel),
                     child: const Text("Add Transaction")),
               ],
             ),

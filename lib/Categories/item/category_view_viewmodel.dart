@@ -19,10 +19,10 @@ CategoryViewViewModel(this._category);
       return;
     }
 
-    int result = await _transactionService.addTransaction(
+    bool result = await _transactionService.addTransaction(
         _category.tag, date, doubleCost, extraNotes);
 
-    if (result == 1) {
+    if (result) {
     List<Transaction> transactions = await _transactionService.getAllTransactions();
               updateSum(transactions);
     monthlySum(transactions);
@@ -40,10 +40,10 @@ CategoryViewViewModel(this._category);
       return;
     }
 
-    int result = await _transactionService.addTransaction(
+    bool result = await _transactionService.addTransaction(
         _category.tag, date, doubleCost, extraNotes);
 
-    if (result == 1) {
+    if (result) {
     List<Transaction> transactions = await _transactionService.getAllTransactions();
               updateSum(transactions);
     monthlySum(transactions);
