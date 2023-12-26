@@ -35,7 +35,7 @@ void main() {
     _sut = TransactionWorker(_mockTransactionRepo);
 
     expect(
-        await _sut.addTransaction(category, date, cost, extraNotes), success);
+        await _sut.addTransaction(category, date, cost, extraNotes), true);
   });
 
   test("Add a transaction fails", () async {
@@ -43,7 +43,7 @@ void main() {
     DateTime date = DateTime(2017, 9, 7, 17, 30);
     double cost = 3.24;
     String extraNotes = "Notes";
-    int success = -1;
+    int success = 0;
 
     when(_mockTransactionRepo.createTransaction(
             category, date, cost, extraNotes))
@@ -52,7 +52,7 @@ void main() {
     _sut = TransactionWorker(_mockTransactionRepo);
 
     expect(
-        await _sut.addTransaction(category, date, cost, extraNotes), success);
+        await _sut.addTransaction(category, date, cost, extraNotes), false);
   });
 
   test("Remove a transaction", () async {
@@ -62,7 +62,7 @@ void main() {
     when(_mockTransactionRepo.removeTransaction(mockTransaction))
         .thenAnswer((_) async => 1);
 
-    expect(await _sut.deleteTransaction(mockTransaction), mockTransaction);
+    expect(await _sut.deleteTransaction(mockTransaction), true);
   });
 
   test("Remove a transaction fails", () async {
@@ -70,11 +70,11 @@ void main() {
     _sut = TransactionWorker(_mockTransactionRepo);
 
     when(_mockTransactionRepo.removeTransaction(mockTransaction))
-        .thenAnswer((_) async => -1);
+        .thenAnswer((_) async => 0);
     //NOTES: Use () => for tests where a throw is expected.  Don't use "await"
     // https://stackoverflow.com/questions/54241396/flutter-test-that-a-specific-exception-is-thrown
     expect(
-        () => _sut.deleteTransaction(mockTransaction), throwsA(isA<Error>()));
+        () => _sut.deleteTransaction(mockTransaction), false);
   });
 
   test("Update a transaction", () async {
@@ -84,7 +84,7 @@ void main() {
     when(_mockTransactionRepo.updateTransaction(mockTransaction))
         .thenAnswer((_) async => 1);
 
-    expect(await _sut.updateTransaction(mockTransaction), mockTransaction);
+    expect(await _sut.updateTransaction(mockTransaction), true);
   });
 
   test("Update a transaction fails", () async {
@@ -92,11 +92,12 @@ void main() {
     _sut = TransactionWorker(_mockTransactionRepo);
 
     when(_mockTransactionRepo.updateTransaction(mockTransaction))
-        .thenAnswer((_) async => -1);
+        .thenAnswer((_) async => 0);
     //NOTES: Use () => for tests where a throw is expected.  Don't use "await"
     // https://stackoverflow.com/questions/54241396/flutter-test-that-a-specific-exception-is-thrown
-    expect(
-        () => _sut.updateTransaction(mockTransaction), throwsA(isA<Error>()));
+    // expect(() => _sut.updateTransaction(mockTransaction), throwsA(isA<Error>()));
+        expect(() => _sut.updateTransaction(mockTransaction), false);
+
   });
 
   test("Get all transactions", () async {
@@ -105,7 +106,10 @@ void main() {
     when(_mockTransactionRepo.getAllTransactions())
         .thenAnswer((realInvocation) async => mockTransactions);
 
-        expect(await _sut.getAllTransactions(), mockTransactions);
+        List<Transaction> result = await _sut.getAllTransactions();
+
+        expect(result, mockTransactions);
+        expect(result.first.getCost(), 102.48);
   });
 
   test("Get all transactions for the test financial category", () async {

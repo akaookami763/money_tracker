@@ -131,7 +131,7 @@ class TransactionViewModelImpl extends ChangeNotifier
   // MARK: Class Functions
 
   void _updateTransactions() async {
-    _transactions = await _transactionService.getAllTransactions();
+    _transactions = (await _transactionService.getAllTransactions());
     _categories = await _categoryService.getAllCategories();
     notifyListeners();
   }

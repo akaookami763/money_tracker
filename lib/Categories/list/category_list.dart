@@ -82,15 +82,11 @@ class _CategoryListViewState extends State<CategoryListView> {
     });
   }
 
-  void updateTransactionsAndCategories(
-      TransactionViewModel tVM) async {
+  void updateTransactionsAndCategories(TransactionViewModel tVM) async {
     print(
         "SELFLOG: Added transaction, so updating the top level state transactions and categories");
-    tVM.addTransaction(
-        _searchController.text,
-        _transactionController.text,
-        _viewModel.currentDate,
-        _notesController.text);
+    tVM.addTransaction(_searchController.text, _transactionController.text,
+        _viewModel.currentDate, _notesController.text);
     setState(() {
       _searchController.text = "";
       _transactionController.text = "";
@@ -100,15 +96,13 @@ class _CategoryListViewState extends State<CategoryListView> {
   }
 
   void setLocalCategoriesAndTransactions(TransactionViewModel tVM) {
-      _viewModel.updateCategories(tVM.getCategories(), tVM.getTransactions());
+    _viewModel.updateCategories(tVM.getCategories(), tVM.getTransactions());
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<TransactionViewModelImpl>(
         builder: (context, transactionViewModel, child) {
-                print("SELFLOG: Rerendering with state: ${_viewModel.viewState}");
-
       setLocalCategoriesAndTransactions(transactionViewModel);
       return GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -155,8 +149,8 @@ class _CategoryListViewState extends State<CategoryListView> {
                     },
                     child: const Text("Notes")),
                 ElevatedButton(
-                    onPressed: () => updateTransactionsAndCategories(
-                        transactionViewModel),
+                    onPressed: () =>
+                        updateTransactionsAndCategories(transactionViewModel),
                     child: const Text("Add Transaction")),
               ],
             ),

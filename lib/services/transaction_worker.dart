@@ -38,7 +38,10 @@ class TransactionWorker extends TransactionService {
 
   @override
   Future<List<Transaction>> getAllTransactions() async {
-    return _repository.getAllTransactions();
+    List<Transaction> transactions = await _repository.getAllTransactions();
+    // Sort in descending order by date, globally
+    transactions.sort((a, b) => b.getDate().compareTo(a.getDate()));
+    return transactions;
   }
 
   @override

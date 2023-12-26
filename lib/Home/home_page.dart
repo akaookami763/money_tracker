@@ -6,7 +6,12 @@ import '../Categories/list/category_list.dart';
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(length: 3, child: Scaffold(appBar: AppBar(
+    return GestureDetector(
+      onTap: () {
+        print("Checking for focus");
+        FocusScope.of(context).unfocus();
+      },
+      child: DefaultTabController(length: 3, child: Scaffold(appBar: AppBar(
       title: const Text("Money Tracker"),
       bottom: const TabBar(tabs: [
         Tab(icon: Icon(Icons.home)),
@@ -18,7 +23,7 @@ class HomePage extends StatelessWidget {
         CategoryListView(),
         TransactionHistory(),
         Tab(child: Text("Budget Feature Coming Soon!")),
-      ]),));
+      ]),)),);
 
     // return Scaffold(
     //   appBar: AppBar(

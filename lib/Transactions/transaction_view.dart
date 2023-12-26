@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:money_tracker/DataCentral/transaction_model.dart';
+import 'package:money_tracker/TopLevel/transaction_viewmodelimpl.dart';
 import 'package:money_tracker/Transactions/transaction_edit_view.dart';
 import 'package:money_tracker/Transactions/transaction_view_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 import '../Utils/DateUtils/date_formatter.dart';
 
@@ -23,23 +25,25 @@ class _TransactionViewState extends State<TransactionView> {
     setState(() {});
   }
 
-  void _editTransaction() {
+  void _editTransaction(TransactionViewModelImpl vm) {
     showModalBottomSheet(
-      isScrollControlled: true,
+        isScrollControlled: true,
         context: context,
-        builder: ((context) {
-          return TransactionEditView(widget.transaction, _finishEdit);
-        }));
+        builder: ((context) => ChangeNotifierProvider(
+            create: (context) => vm,
+            child: TransactionEditView(widget.transaction, _finishEdit))));
   }
 
   @override
   Widget build(BuildContext context) {
     Transaction transaction = this.widget.transaction;
+    final transactionViewModel = context.watch<TransactionViewModelImpl>();
+
     return GestureDetector(
         onTap: () => setState(() {
               _viewModel.showNotes = !_viewModel.showNotes;
             }),
-        onLongPress: () => _editTransaction(),
+        onLongPress: () => _editTransaction(transactionViewModel),
         child: Card(
           color: Color.fromARGB(130, 161, 235, 95),
           shadowColor: Colors.purple,
