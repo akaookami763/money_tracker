@@ -43,7 +43,7 @@ class _TransactionViewState extends State<TransactionView> {
         onTap: () => setState(() {
               _viewModel.showNotes = !_viewModel.showNotes;
             }),
-        onLongPress: () => _editTransaction(transactionViewModel),
+        //onLongPress: () => _editTransaction(transactionViewModel), TODO: Figure out why this crashes after 1 try
         child: Card(
           color: Color.fromARGB(130, 161, 235, 95),
           shadowColor: Colors.purple,
@@ -51,6 +51,7 @@ class _TransactionViewState extends State<TransactionView> {
           child: Padding(
               padding: const EdgeInsets.all(8),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -68,7 +69,11 @@ class _TransactionViewState extends State<TransactionView> {
                     Card(
                       color: Color.fromARGB(255, 255, 255, 255),
                       shadowColor: Colors.purple,
-                      child: Text(transaction.getNotes()),
+                      child: Padding(
+                          padding: EdgeInsets.all(3),
+                          child: Text(
+                            transaction.getNotes(),
+                          )),
                     )
                 ],
               )),

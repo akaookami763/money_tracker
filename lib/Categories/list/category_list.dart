@@ -138,20 +138,36 @@ class _CategoryListViewState extends State<CategoryListView> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                TextButton.icon(
-                  onPressed: _showDatePicker,
-                  icon: Icon(Icons.calendar_month),
-                  label: Text(dateFormatter.format(_viewModel.currentDate)),
+                Expanded(
+                  flex: 3,
+                  child: TextButton.icon(
+                    onPressed: _showDatePicker,
+                    icon: Icon(Icons.calendar_month),
+                    label: Text(dateFormatter.format(_viewModel.currentDate)),
+                  ),
                 ),
-                ElevatedButton(
-                    onPressed: () async {
-                      _openNotesModal();
-                    },
-                    child: const Text("Notes")),
-                ElevatedButton(
-                    onPressed: () =>
-                        updateTransactionsAndCategories(transactionViewModel),
-                    child: const Text("Add Transaction")),
+                Expanded(
+                  flex: 2,
+                    child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                      minimumSize: Size.zero,
+                      padding: EdgeInsets.fromLTRB(1, 8, 1, 8)
+                    ),
+                        onPressed: () async {
+                          _openNotesModal();
+                        },
+                        child: const Text("Notes"))),
+                Expanded(
+                  flex: 3,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size.zero,
+                      padding: EdgeInsets.fromLTRB(2, 8, 2, 8)
+                    ),
+                      onPressed: () =>
+                          updateTransactionsAndCategories(transactionViewModel),
+                      child: const Text("Add Transaction")),
+                )
               ],
             ),
             (_viewModel.getSuggestedCategories(_searchController.text).isEmpty)

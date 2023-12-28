@@ -76,7 +76,7 @@ class _TransactionHistoryState extends State<TransactionHistory> {
               ),
             ],
           ),
-          ListView.builder(
+          Expanded(child:           ListView.builder(
             scrollDirection: Axis.vertical,
             shrinkWrap: true,
             itemCount: _viewModel
@@ -122,7 +122,8 @@ class _TransactionHistoryState extends State<TransactionHistory> {
                         dateFilter: _viewModel.dateFilterState)[index]);
               },
             ),
-          )
+          ))
+
         ]),
       );
     }
